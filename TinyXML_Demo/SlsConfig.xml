@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<SLSConfiguration version="1.0">
+
+  <Param>
+    <Camera width="640" height="480" type="DragonFly Express" device="2" />
+    <Projector width="800" height="600" />
+    <MainDisplay width="1280" />
+    <MainWindowInMainDisplayWidth width="800" />
+    <Monitor width="600" />
+    <SubMonitor width="400" />
+    <InitWindowPos y="200" />
+    <WaitTime time="300" />
+    <Checker size="23" x="7" y="10" />
+  </Param>
+
+  <DirName>
+    <Data name="../../data" />
+    <GrayCode name="GrayCode" />
+    <Camera name="Camera" />
+    <Projector name="Projector" />
+    <ARTag name="ARTag" />
+    <Shape name="Shape" />
+    <Intermediate name="intermediate" />
+  </DirName>
+
+  <FileName>
+    <Intr name="intr.txt" />
+    <Dist name="dist.txt" />
+    <Rot name="rot.txt" />
+    <Trans name="trans.txt" />
+    <ARTag config="marker_cfg_a4.txt" pos="marker_pos_a4.txt" />
+    <Obj name="data.obj" />
+    <Extrpos name="extrpos.txt" />
+    <Intrpos name="intrpos.txt" />
+  </FileName>
+
+</SLSConfiguration>

@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StructuredLight3DReconstruction", "StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj", "{8A83D684-A85D-4CE1-B1DE-1F2FBF936494}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Glui_Demo", "Glui_Demo\Glui_Demo.vcxproj", "{ACF998F4-AFFD-493A-AADD-0D498936F519}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TinyXML_Demo", "TinyXML_Demo\TinyXML_Demo.vcxproj", "{2DE13BC7-F9C5-49FA-83F2-54A60015B5F7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BilateralFilter_Demo", "BilateralFilter_Demo\BilateralFilter_Demo.vcxproj", "{ECC5B27A-D66C-4679-9D7F-761A4FAC07A1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8A83D684-A85D-4CE1-B1DE-1F2FBF936494}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8A83D684-A85D-4CE1-B1DE-1F2FBF936494}.Debug|Win32.Build.0 = Debug|Win32
+		{8A83D684-A85D-4CE1-B1DE-1F2FBF936494}.Release|Win32.ActiveCfg = Release|Win32
+		{8A83D684-A85D-4CE1-B1DE-1F2FBF936494}.Release|Win32.Build.0 = Release|Win32
+		{ACF998F4-AFFD-493A-AADD-0D498936F519}.Debug|Win32.ActiveCfg = Debug|Win32
+		{ACF998F4-AFFD-493A-AADD-0D498936F519}.Debug|Win32.Build.0 = Debug|Win32
+		{ACF998F4-AFFD-493A-AADD-0D498936F519}.Release|Win32.ActiveCfg = Release|Win32
+		{ACF998F4-AFFD-493A-AADD-0D498936F519}.Release|Win32.Build.0 = Release|Win32
+		{2DE13BC7-F9C5-49FA-83F2-54A60015B5F7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2DE13BC7-F9C5-49FA-83F2-54A60015B5F7}.Debug|Win32.Build.0 = Debug|Win32
+		{2DE13BC7-F9C5-49FA-83F2-54A60015B5F7}.Release|Win32.ActiveCfg = Release|Win32
+		{2DE13BC7-F9C5-49FA-83F2-54A60015B5F7}.Release|Win32.Build.0 = Release|Win32
+		{ECC5B27A-D66C-4679-9D7F-761A4FAC07A1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{ECC5B27A-D66C-4679-9D7F-761A4FAC07A1}.Debug|Win32.Build.0 = Debug|Win32
+		{ECC5B27A-D66C-4679-9D7F-761A4FAC07A1}.Release|Win32.ActiveCfg = Release|Win32
+		{ECC5B27A-D66C-4679-9D7F-761A4FAC07A1}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
