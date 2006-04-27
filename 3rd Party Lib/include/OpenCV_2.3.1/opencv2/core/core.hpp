@@ -61,7 +61,7 @@
 #include <new>
 #include <string>
 #include <vector>
-#endif // SKIP_INCLUDES
+#endif						// SKIP_INCLUDES
 
 /*! \namespace cv
     Namespace where all the C++ OpenCV functionality resides

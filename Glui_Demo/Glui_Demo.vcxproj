@@ -37,13 +37,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ExecutablePath>C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\bin\OpenGL\Glut;$(ExecutablePath)</ExecutablePath>
+    <ExecutablePath>..\3rd Party Lib\bin\OpenGL\Glut;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\3rd Party Lib\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\lib\OpenGL\Glui;C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\lib\OpenGL\Glut;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\3rd Party Lib\lib\OpenGL\Glui;..\3rd Party Lib\lib\OpenGL\Glut;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

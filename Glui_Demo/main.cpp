@@ -4,9 +4,6 @@
 #include <OpenGL\Glui\glui.h>
 #include <OpenGL\Glut\glut.h>
 
-// #include <gl\glui.h>
-// #include <gl\glut.h>
-
 // 
 // MACROS DEFINITIONS
 // 
@@ -19,11 +16,9 @@
 #define			SHOW_ID							302
 #define			HIDE_ID								303
 
-// 
 // ===========================================
-//  GLUI & GLUT Control Callback Declarations
+//   GLUI & GLUT Control Callback Declarations
 // ===========================================
-// 
 
 void gluiControlCB(int control_id);
 void gluiMenuCB(int value);
@@ -51,12 +46,11 @@ void drawAxes(float scale);
 //  GLUI Components
 // 
 
-GLUI *			gluiLeftSubWindow		= NULL;
-GLUI *			gluiBottomSubWindow		= NULL;
+GLUI				*	gluiLeftSubWindow			= NULL;
+GLUI				*	gluiBottomSubWindow		= NULL;
 
-GLUI_Panel *	optionsPanel			= NULL;
-GLUI_Panel *	objPropertyPanel		= NULL;
-
+GLUI_Panel	*	optionsPanel						= NULL;
+GLUI_Panel	*	objPropertyPanel				= NULL;
 
 // ==================================================
 //  Global Live Variables && GLUT MainWindow Handler
@@ -67,21 +61,21 @@ GLfloat light0_diffuse[]    = { 0.6f, 0.6f, 1.0f, 1.0f };
 GLfloat light0_position[]  = { 0.5f, 0.5f, 1.0f, 0.0f };
 
 int				hMainWndInstance		= -1;
-float			xy_aspect				= 1.0f;
+float			xy_aspect					= 1.0f;
 
-int				wireframe				= 0;
-float			scale					= 1.0f;
+int				wireframe					= 0;
+float			scale							= 1.0f;
 
-int				sphereSegments			= 8;
+int				sphereSegments		= 8;
 
 int				showSphere				= 1;
-int				showAxes				= 1;
-int				showText				= 1;
+int				showAxes					= 1;
+int				showText					= 1;
 
 float sphere_rotate[16] = { 1, 0, 0, 0, 
-							0, 1, 0, 0, 
-							0, 0, 1, 0, 
-							0, 0, 0, 1 };
+										0, 1, 0, 0, 
+										0, 0, 1, 0, 
+										0, 0, 0, 1 };
 
 float obj_pos[] = { 0.0f, 0.0f, 0.0f };
 
@@ -91,6 +85,7 @@ float obj_pos[] = { 0.0f, 0.0f, 0.0f };
 
 int main(int argc, char ** argv)
 {
+	
 	// 
 	// Initialize GLUT && Create Window
 	// 
@@ -105,6 +100,7 @@ int main(int argc, char ** argv)
 	glutDisplayFunc(glutDisplayCB);
 	glutMotionFunc(glutMotionCB);
 	glutPassiveMotionFunc(glutPassiveMotionCB);
+	
 	GLUI_Master.set_glutReshapeFunc(glutReshapeCB);
 	GLUI_Master.set_glutKeyboardFunc(glutKeyboardCB);
 	GLUI_Master.set_glutSpecialFunc(NULL);
@@ -125,9 +121,9 @@ int main(int argc, char ** argv)
 
 	glEnable(GL_DEPTH_TEST);
 
-	//
-	// Here is the GLUI code
-	// 
+	// ===============
+	//  Here is the GLUI code
+	// ===============
 
 	printf("GLUI Version = %3.2f\n", GLUI_Master.get_version());
 

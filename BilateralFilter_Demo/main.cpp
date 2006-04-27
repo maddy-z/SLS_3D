@@ -1,40 +1,142 @@
 #include <OpenCV_2.3.1\opencv2\opencv.hpp>
 
+#include "BilateralFilter.h"
+#include "AnoBF.h"
+
+// ==============
+//  MACRO DEFINITIONS
+// ==============
+
+#define				KERNEL_SIZE						31
+#define				MAX_KERNEL_SIZE				63
+
+// ============
+//   Global Variables
+// ============
+
+cv::Mat		src;
+cv::Mat		dest;
+
+double		* srcArray			= NULL;
+double		* destArray		= NULL;
+
+char	SRC_WIN_NAME[]							= "Src Image";
+char	DEST_WIN_NAME[]							= "Dest Image";
+
+char TRACKBAR_KERNELSIZE_NAME[]		= "Kernel Size";
+char TRACKBAR_SIGMACOLOR_NAME[]	= "Sigma Color";
+char TRACKBAR_SIGMASPACE_NAME[]		= "Sigma Space";
+
+int		kernelSize										= KERNEL_SIZE;
+
+int		sigmaColor									= 1;
+int		sigmaSpace									= 1;
+
 // 
-// Global Variables
+// Utility Function
 // 
 
-cv::Mat src;
-cv::Mat dest;
+void DoubleArrayCopyToCvMat(const double * src, cv::Mat & dest)
+{
+	int destH = dest.size().height, destW = dest.size().width;
+	int destRowStep = dest.step, destChannel = dest.channels();
+	
+	assert (dest.type() == CV_32FC1);
 
-char SRC_WIN_NAME[] = "Src Image";
-char DEST_WIN_NAME[] = "Dest Image";
+	uchar * destRowStart = dest.data;
+	float * destDataPtr = NULL;
 
-#define			KERNEL_SIZE			31
+	for (int y = 0; y < destH; ++y, destRowStart += destRowStep) 
+	{
+		destDataPtr = (float *)(destRowStart);
+		
+		for (int x = 0; x < destW; ++x, destDataPtr += destChannel) 
+		{
+			*destDataPtr = (*src++) / 255.f; 
+		}
+	}
+}
 
+void CvMatCopyToDoubleArray(const cv::Mat & src, double * dest)
+{
+	int srcH = src.size().height, srcW = src.size().width;
+	int srcRowStep = src.step, srcChannel = src.channels();
+	
+	assert (src.type() == CV_8UC1);
+	assert (dest != NULL);
 
-//
-// Main Function
-// 
+	const uchar * srcRowStart = src.data;
+	const uchar * srcDataPtr = NULL;
+
+	for (int y = 0; y < srcH; ++y, srcRowStart += srcRowStep) 
+	{
+		srcDataPtr = srcRowStart;
+		
+		for (int x = 0; x < srcW; ++x, srcDataPtr += srcChannel) 
+		{
+			*dest++ = (double)(*srcDataPtr); 
+		}
+	}
+
+	return;
+}
+
+// =============
+//   Callback Function
+// =============
+
+void onTrackBar(int, void *)
+{
+	// cv::bilateralFilter(src, dest, kernelSize, sigmaColor, sigmaSpace);
+	
+	CBilateralFilter bFilter(sigmaSpace, sigmaColor, kernelSize, 256);
+
+	// BilateralFilter bFilter(sigmaSpace, sigmaColor, kernelSize, 256);
+	// bFilter.printFilterInfo();
+	destArray = bFilter.filter(srcArray, src.cols, src.rows, 1);
+	if (destArray == NULL) {
+		printf ("Not successful Filtering\n");
+		return;
+	}
+
+	DoubleArrayCopyToCvMat(destArray, dest);
+	delete [] destArray;
+
+	cv::imshow( DEST_WIN_NAME, dest);
+}
+
+// ==========
+//   Main Function
+// ==========
 
 int main(int argc, char ** argv)
 {
-	
 	cv::namedWindow ( SRC_WIN_NAME, CV_WINDOW_AUTOSIZE );
 	cv::namedWindow ( DEST_WIN_NAME, CV_WINDOW_AUTOSIZE );
 	
-	src = cv::imread("lena.jpg", 1);
-	dest = cv::Mat::zeros(src.size(), src.type());
+	src = cv::imread("lena.jpg", 0);
+	dest = cv::Mat::zeros(src.size(), CV_32FC1);
 
-	cv::bilateralFilter(src, dest, KERNEL_SIZE, KERNEL_SIZE * 2, KERNEL_SIZE / 2);
-	
+	srcArray = new double[src.cols * src.rows];
+	CvMatCopyToDoubleArray(src, srcArray);
+
 	cv::imshow( SRC_WIN_NAME, src);
-	cv::imshow( DEST_WIN_NAME, dest);
+
+	// DoubleArrayCopyToCvMat(destArray, dest);
+	// cv::imshow(DEST_WIN_NAME, dest);
+
+	cv::createTrackbar(TRACKBAR_KERNELSIZE_NAME, DEST_WIN_NAME, &kernelSize, MAX_KERNEL_SIZE, onTrackBar);
+	cv::createTrackbar(TRACKBAR_SIGMACOLOR_NAME, DEST_WIN_NAME, &sigmaColor, 2 * MAX_KERNEL_SIZE, onTrackBar);
+	cv::createTrackbar(TRACKBAR_SIGMASPACE_NAME, DEST_WIN_NAME, &sigmaSpace, 2 * MAX_KERNEL_SIZE, onTrackBar);
+
+	onTrackBar(0, 0);
 
 	cv::waitKey(0);
 
+	delete [] srcArray;
+	delete [] destArray;
+	
 	return EXIT_SUCCESS;
-
 }
 
 /*

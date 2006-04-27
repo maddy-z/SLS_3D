@@ -14,7 +14,7 @@
 // MACROS DEFINITIONS
 // 
 
-#define		SLS_CONFIG_XMLFILEPATH		"SlsConfig.xml"
+#define			SLS_CONFIG_XMLFILEPATH			"SlsConfig.xml"
 
 // 
 // Global Variables
@@ -47,9 +47,6 @@ int main(int argc, char ** argv)
 	SlsParam slsParameters;
 	slsParameters.LoadFromXmlFile(SLS_CONFIG_XMLFILEPATH);
 	slsParameters.printSlsParams();
-
-	// system("pause");
-	// exit(0);
 
 	// ========
 	//   Glut Code

@@ -3,9 +3,9 @@
 
 #include "BilateralFilter.h"
 
-// =========================
+// ===================
 //  Public Member Functions
-// =========================
+// ===================
 
 BilateralFilter::
 BilateralFilter(double spatialSigma, double rangeSigma, unsigned int kernelSize, unsigned int apprRes) : 
@@ -13,7 +13,6 @@ BilateralFilter(double spatialSigma, double rangeSigma, unsigned int kernelSize,
 	m_RangeSigma(rangeSigma),
 	m_KernelSize(kernelSize),
 	m_ApproxResultion(apprRes)
-
 {
 
 	m_SpatialKernel.clear();
@@ -22,12 +21,12 @@ BilateralFilter(double spatialSigma, double rangeSigma, unsigned int kernelSize,
 	double value;
 	double dx, dy;
 
-	int kernelHeight, kernelWidth;	
+	int kernelHeight, kernelWidth;
 	kernelHeight = kernelWidth = 2 * kernelSize + 1;
 
-	// 
-	// Initialize Spatial Filter
-	//
+	// ===============
+	//   Initialize Spatial Filter
+	// ===============
 	
 	for (int i = 0; i < kernelHeight; ++i) 
 	{
@@ -41,9 +40,9 @@ BilateralFilter(double spatialSigma, double rangeSigma, unsigned int kernelSize,
 		}
 	}
 
-	// 
-	// Initialize Range Filter
-	// 
+	// ===============
+	//   Initialize Range Filter
+	// ===============
 
 	for (unsigned int i = 0; i <= apprRes; ++i) 
 	{
@@ -57,7 +56,7 @@ BilateralFilter(double spatialSigma, double rangeSigma, unsigned int kernelSize,
 }
 
 BilateralFilter::
-~BilateralFilter() 
+~BilateralFilter()
 {
 }
 
@@ -79,9 +78,11 @@ bool BilateralFilter::Filter(const double * src, double * dest, int height, int 
 
 	for (int i = m_KernelSize; i + m_KernelSize < height; ++i) 
 	for (int j = m_KernelSize; j + m_KernelSize < width; ++j) 
+	// for (int c = 0; c < channel; ++c)
 	{
 		double sum1 = 0.0f, sum2 = 0.0f;
 		double v_ij = src[i * width + j];
+		// double v_ij = src[channel * (i * width + j) + c];
 
 		for (int deltaH = -m_KernelSize; deltaH <= m_KernelSize; ++deltaH) 
 		for (int deltaW = -m_KernelSize; deltaW <= m_KernelSize; ++deltaW) 
@@ -95,9 +96,9 @@ bool BilateralFilter::Filter(const double * src, double * dest, int height, int 
 			sum2 += f1 * f2;
 		}
 
-		if (sum2 >= 1.e-3) {
+		// if (sum2 >= 1.e-11) {
 			tmp[i * width + j] = sum1 / sum2;
-		}
+		// }
 	}
 
 	memcpy(dest, tmp, height * width * channel * sizeof(double));
