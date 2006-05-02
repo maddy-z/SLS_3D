@@ -21,15 +21,9 @@
     <ClCompile Include="BilateralFilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AnoBF.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BilateralFilter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AnoBF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

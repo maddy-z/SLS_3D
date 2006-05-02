@@ -2,13 +2,12 @@
 #include <OpenCV_2.3.1\opencv2\imgproc\imgproc.hpp>
 
 #include "BilateralFilter.h"
-#include "AnoBF.h"
 
 // ===================
 //  MACRO DEFINITIONS
 // ===================
 
-#define	KERNEL_SIZE					32
+#define	KERNEL_SIZE					15
 #define	MAX_KERNEL_SIZE				64
 
 // ====================
@@ -16,15 +15,17 @@
 // ====================
 
 cv::Mat	src;
-cv::Mat	dest;
-cv::Mat dest2;
+cv::Mat	mylib_bf_dest;
+cv::Mat opencv_bf_dest;
+cv::Mat opencv_gf_dest;
 
 double	* srcArray					= NULL;
 double	* destArray					= NULL;
 
 char	SRC_WIN_NAME[]				= "Src Image";
-char	DEST_WIN_NAME[]				= "Dest Image";
-char	DEST2_WIN_NAME[]			= "Dest2 Image";
+char	MYLIB_BF_WIN_NAME[]		= "My BF Image";
+char	OPENCV_BF_WIN_NAME[]	= "OpenCV BF Image";
+char OPENCV_GF_WIN_NAME[]	= "OpenCV GF Image";
 
 char	TRACKBAR_KERNELSIZE_NAME[]	= "Kernel Size";
 char	TRACKBAR_SIGMACOLOR_NAME[]	= "Sigma Color";
@@ -58,8 +59,6 @@ void DoubleArrayCopyToCvMat(const double * src, cv::Mat & dest)
 			*destDataPtr = (*src++) / 255.f; 
 		}
 	}
-
-	return;
 }
 
 void CvMatCopyToDoubleArray(const cv::Mat & src, double * dest)
@@ -92,25 +91,23 @@ void CvMatCopyToDoubleArray(const cv::Mat & src, double * dest)
 
 void onTrackBar(int, void *)
 {
-	// cv::bilateralFilter(src, dest, kernelSize, sigmaColor, sigmaSpace);
-	
-	// CBilateralFilter bFilter(sigmaSpace, sigmaColor, kernelSize, 256);
-	// destArray = bFilter.filter(srcArray, src.cols, src.rows, 1);
-	
-	BilateralFilter bFilter(sigmaSpace, sigmaColor, kernelSize, 256);
+	int tmpKSize = 2 * kernelSize + 1;
+
+	BilateralFilter bFilter(sigmaSpace, sigmaColor, tmpKSize, 256);
 	bFilter.Filter(srcArray, destArray, src.rows, src.cols, 1);
-	// bFilter.printFilterInfo(); 
 	if (destArray == NULL) {
-		printf ("Not successful Filtering\n");
+		printf ("Not successful Bilateral Filtering\n");
 		return;
 	}
+	DoubleArrayCopyToCvMat(destArray, mylib_bf_dest);
 
-	DoubleArrayCopyToCvMat(destArray, dest);
+	cv::bilateralFilter(src, opencv_bf_dest, tmpKSize, sigmaColor, sigmaSpace, cv::BORDER_CONSTANT);
+	cv::GaussianBlur(src, opencv_gf_dest, cv::Size(tmpKSize, tmpKSize), sigmaSpace);
 
-	cv::bilateralFilter(src, dest2, kernelSize, sigmaColor, sigmaSpace, cv::BORDER_CONSTANT);
+	cv::imshow( MYLIB_BF_WIN_NAME, mylib_bf_dest);
+	cv::imshow( OPENCV_BF_WIN_NAME, opencv_bf_dest);
+	cv::imshow( OPENCV_GF_WIN_NAME, opencv_gf_dest);
 
-	cv::imshow( DEST_WIN_NAME, dest);
-	cv::imshow( DEST2_WIN_NAME, dest2);
 }
 
 // =================
@@ -120,12 +117,14 @@ void onTrackBar(int, void *)
 int main(int argc, char ** argv)
 {
 	cv::namedWindow ( SRC_WIN_NAME, CV_WINDOW_AUTOSIZE );
-	cv::namedWindow ( DEST_WIN_NAME, CV_WINDOW_AUTOSIZE );
-	cv::namedWindow ( DEST2_WIN_NAME, CV_WINDOW_AUTOSIZE );	
+	cv::namedWindow ( MYLIB_BF_WIN_NAME, CV_WINDOW_AUTOSIZE );
+	cv::namedWindow ( OPENCV_BF_WIN_NAME, CV_WINDOW_AUTOSIZE );	
+	cv::namedWindow ( OPENCV_GF_WIN_NAME, CV_WINDOW_AUTOSIZE );
 
 	src = cv::imread("lena.jpg", 0);
-	dest = cv::Mat::zeros(src.size(), CV_32FC1);
-	dest2 = cv::Mat::zeros(src.size(), src.type());
+	mylib_bf_dest = cv::Mat::zeros(src.size(), CV_32FC1);
+	opencv_bf_dest = cv::Mat::zeros(src.size(), src.type());
+	opencv_gf_dest = cv::Mat::zeros(src.size(), src.type());
 
 	srcArray = new double[src.cols * src.rows];
 	destArray = new double[src.cols * src.rows];
@@ -134,9 +133,9 @@ int main(int argc, char ** argv)
 
 	cv::imshow( SRC_WIN_NAME, src);
 
-	cv::createTrackbar(TRACKBAR_KERNELSIZE_NAME, DEST_WIN_NAME, &kernelSize, MAX_KERNEL_SIZE, onTrackBar);
-	cv::createTrackbar(TRACKBAR_SIGMACOLOR_NAME, DEST_WIN_NAME, &sigmaColor, 2 * MAX_KERNEL_SIZE, onTrackBar);
-	cv::createTrackbar(TRACKBAR_SIGMASPACE_NAME, DEST_WIN_NAME, &sigmaSpace, 2 * MAX_KERNEL_SIZE, onTrackBar);
+	cv::createTrackbar(TRACKBAR_KERNELSIZE_NAME, MYLIB_BF_WIN_NAME, &kernelSize, MAX_KERNEL_SIZE, onTrackBar);
+	cv::createTrackbar(TRACKBAR_SIGMACOLOR_NAME, MYLIB_BF_WIN_NAME, &sigmaColor, 2 * MAX_KERNEL_SIZE, onTrackBar);
+	cv::createTrackbar(TRACKBAR_SIGMASPACE_NAME, MYLIB_BF_WIN_NAME, &sigmaSpace, 2 * MAX_KERNEL_SIZE, onTrackBar);
 
 	onTrackBar(0, 0);
 
