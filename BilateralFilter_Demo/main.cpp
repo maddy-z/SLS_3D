@@ -15,6 +15,7 @@
 // ====================
 
 cv::Mat	src;
+
 cv::Mat	mylib_bf_dest;
 cv::Mat opencv_bf_dest;
 cv::Mat opencv_gf_dest;
@@ -50,12 +51,10 @@ void DoubleArrayCopyToCvMat(const double * src, cv::Mat & dest)
 	uchar * destRowStart = dest.data;
 	float * destDataPtr = NULL;
 
-	for (int y = 0; y < destH; ++y, destRowStart += destRowStep) 
-	{
+	for (int y = 0; y < destH; ++y, destRowStart += destRowStep) {
 		destDataPtr = (float *)(destRowStart);
-		
-		for (int x = 0; x < destW; ++x, destDataPtr += destChannel) 
-		{
+
+		for (int x = 0; x < destW; ++x, destDataPtr += destChannel) {
 			*destDataPtr = (*src++) / 255.f; 
 		}
 	}
@@ -72,17 +71,13 @@ void CvMatCopyToDoubleArray(const cv::Mat & src, double * dest)
 	const uchar * srcRowStart = src.data;
 	const uchar * srcDataPtr = NULL;
 
-	for (int y = 0; y < srcH; ++y, srcRowStart += srcRowStep) 
-	{
-		srcDataPtr = srcRowStart;
-		
-		for (int x = 0; x < srcW; ++x, srcDataPtr += srcChannel) 
-		{
+	for (int y = 0; y < srcH; ++y, srcRowStart += srcRowStep) {
+		srcDataPtr = srcRowStart;	
+
+		for (int x = 0; x < srcW; ++x, srcDataPtr += srcChannel) {
 			*dest++ = (double)(*srcDataPtr); 
 		}
 	}
-
-	return;
 }
 
 // =====================

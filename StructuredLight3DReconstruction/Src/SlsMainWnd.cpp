@@ -32,7 +32,6 @@ void SlsMainWnd::SLSStatusCB(int value)
 	char str[50];
 
 	switch (value) 
-	
 	{
 
 	case SLS_IDLE:							sprintf(str, "SLS_IDLE\n");						break;
