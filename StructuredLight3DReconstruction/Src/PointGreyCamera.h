@@ -1,25 +1,31 @@
-#ifndef	_POINT_GREY_CAMERA_H_
-#define	_POINT_GREY_CAMERA_H_
+#ifndef		_POINT_GREY_CAMERA_H_
+#define		_POINT_GREY_CAMERA_H_
 
-#include <PGR_FlyCapture\PGRFlyCapture.h>
-#include <PGR_FlyCapture\pgrflycaptureplus.h>
+#include	<PGR_FlyCapture\PGRFlyCapture.h>
+#include	<PGR_FlyCapture\pgrflycaptureplus.h>
 
-#define		_VIDEOMODE		FLYCAPTURE_VIDEOMODE_ANY
-#define		_FRAMERATE		FLYCAPTURE_FRAMERATE_ANY
+#include	<iostream>
 
-#define PG_HANDLE_ERROR( error, function )															\
-	if ( error != FLYCAPTURE_OK ) {																			\
-		cout << function << " : " << flycaptureErrorToString( error ) << endl;			\
-		return -1;																										\
+// 
+// MACROS DEFINITIONS
+// 
+
+#define		_VIDEOMODE					FLYCAPTURE_VIDEOMODE_ANY
+#define		_FRAMERATE					FLYCAPTURE_FRAMERATE_ANY
+
+#define PG_HANDLE_ERROR( ERROR, FUNCTION_SIGN )																			\
+	if ( ERROR != FLYCAPTURE_OK ) {																									\
+		std::cout << FUNCTION_SIGN << " : " << flycaptureErrorToString( ERROR ) << std::endl;				\
+		return -1;																																	\
 	}
 
-#define _HANDLE_ERROR( error, function )																\
-	if ( error != FLYCAPTURE_OK ) {																			\
-		cout << function << " : " << flycaptureErrorToString( error ) << endl;			\
-		return -1;																										\
+#define _HANDLE_ERROR( ERROR, FUNTION_SIGN )																				\
+	if ( ERROR != FLYCAPTURE_OK ) {																									\
+		std::cout << FUNTION_SIGN << " : " << flycaptureErrorToString( ERROR ) << std::endl;				\
+		return -1;																																	\
 	}
 
-#define		_BUFFERS			2
+#define		_BUFFERS													2
 
 #define		DEFAULT_COLOR_PROCESSING_METHOD		FLYCAPTURE_EDGE_SENSING
 
@@ -42,50 +48,53 @@ class	PointGreyCamera
 
 public:
 	
+	// 
 	// 内部类
+	// 
+
 	class	Property 
 	{
 	
 	private:
 		
-		FlyCaptureContext	context;
-		FlyCaptureProperty	property;
+		FlyCaptureContext	fcContext;
+		FlyCaptureProperty	fcProperty;
 
-		bool	is_present;
-		bool	is_one_push;
-		bool	is_on_off;
-		bool	is_auto;
-		bool	is_available_one_push;
-		bool	is_available_read_out;
-		bool	is_available_on_off;
-		bool	is_available_auto;
-		bool	is_available_manual;
-		
-		int		value_a;
-		int		value_b;
-		int		min;
-		int		max;
+		bool		is_one_push;
+		bool		is_on_off;
+		bool		is_auto;
+
+		int			value_a;
+		int			value_b;
+
+		bool		is_present;
+		bool		is_available_one_push;
+		bool		is_available_read_out;
+		bool		is_available_on_off;
+		bool		is_available_auto;
+		bool		is_available_manual;
+	
+		int			min;
+		int			max;
 
 	public:
 
-		Property( const FlyCaptureContext n_context,
-					   const FlyCaptureProperty n_property );
-		~Property();
+		Property ( const FlyCaptureContext n_context, const FlyCaptureProperty n_property );
+		~Property ();
 
-		int	Get( void );										// 从驱动程序中获得属性的各个成员值
-		int	GetRatio( float& va, float& vb );			// 获得属性值 A 和 B 在其取值范围内所占的比例, va, vb 分别为输出的参数
-		int	GetRange( void );								// 获得该属性的最大和最小值
+		int	Get( void );											// 从驱动程序中获得属性的各个成员值
+		int	GetRatio( float & va, float & vb );			// 获得属性值 A 和 B 在其取值范围内所占的比例； va, vb 分别为输出的参数
+		int	GetRange( void );									// 获得该属性的最大和最小值
 		
-		int Set ( const bool one_push, const bool on_off, const bool auto_c, const int va, const int vb );					// 设置对应属性的值
-		int SetRatio( const bool one_push, const bool on_off, const bool auto_c, const float va, const float vb );		// 设置属性值所占的当前比例
+		int Set ( const bool one_push, const bool on_off, const bool auto_c, const int va, const int vb );						// 设置对应属性的值
+		int SetRatio( const bool one_push, const bool on_off, const bool auto_c, const float va, const float vb );			// 设置属性值所占的当前比例
 		
-		// 打印出摄像头该属性的值
-		int Print( int num = 1 );
+		int Print( int num = 1 );								// 打印出摄像头该属性的值
 	};
 	
 protected:
 
-	// 摄像头指标，区别多个该摄像头
+	// 摄像头指标, 区别多个该摄像头
 	int			camera_index;
 	int			width;
 	int			height;
@@ -124,6 +133,7 @@ public:
 								const int n_width = DEFAULT_WIDTH,
 								const int n_height = DEFAULT_HEIGHT,
 								const float n_frame_rate = DEFAULT_FRAME_RATE );
+	
 	virtual ~PointGreyCamera();
 
 	// 打印出所有的属性值
@@ -162,10 +172,8 @@ public:
 	void	AutoGain( void );
 	void	AutoWhiteBalance( void );
 
-	// 更亮通过调节其中的两个属性值完成
-	void	Brighter( void );
-	// 更淡
-	void	Darker( void );
+	void	Brighter( void );							// 更亮通过调节其中的两个属性值完成
+	void	Darker( void );							// 更淡
 	
 	// 初始化
 	virtual int Init( void );
@@ -185,19 +193,15 @@ public:
 	int EmptyImageBuffer();
 	
 	// 停止
-	virtual int Stop( void );
-	int checkTriggerReady(FlyCaptureContext context );
+	virtual int Stop ( void );
+	int checkTriggerReady ( FlyCaptureContext context );
 
 	// 设置颜色处理方法
 	inline	 void SetColorProcessingMethod( const FlyCaptureColorMethod method ) 
 	{
 		flycaptureSetColorProcessingMethod( context, method );
 	}
+
 };
 
-#endif	// __POINT_GREY_CAMERA_H__
-
-		
-		
-	
-
+#endif										// _POINT_GREY_CAMERA_H_

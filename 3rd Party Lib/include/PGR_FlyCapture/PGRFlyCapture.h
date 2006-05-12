@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2001-2006 Point Grey Research, Inc. All Rights Reserved.
+// Copyright 2001-2006 Point Grey Research, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of Point
 // Grey Research, Inc. ("Confidential Information").  You shall not
@@ -27,7 +27,7 @@
 //=============================================================================
 
 //=============================================================================
-// $Id: PGRFlyCapture.h,v 1.202 2007/01/19 18:56:30 soowei Exp $
+// $Id: PGRFlyCapture.h,v 1.206 2007/04/30 18:18:10 demos Exp $
 //=============================================================================
 #ifndef __PGRFLYCAPTURE_H__
 #define __PGRFLYCAPTURE_H__
@@ -346,6 +346,10 @@ typedef enum FlyCaptureCameraModel
    FLYCAPTURE_FLEA2,
    FLYCAPTURE_FIREFLY_MV,
    FLYCAPTURE_DRAGONFLY2,
+   FLYCAPTURE_BUMBLEBEE,
+   FLYCAPTURE_BUMBLEBEE2,
+   FLYCAPTURE_BUMBLEBEEXB3,
+   FLYCAPTURE_GRASSHOPPER,
    FLYCAPTURE_UNKNOWN = -1,
 
    // Unused member to force this enum to compile to 32 bits.
@@ -614,6 +618,7 @@ typedef struct FlyCaptureImage
    bool bStippled;
    // The pixel format of this image.
    FlyCapturePixelFormat pixelFormat;
+
    // Reserved for future use.
    unsigned long  ulReserved[ 6 ];
 

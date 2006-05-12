@@ -3,9 +3,6 @@
 #include <OpenGL\Glui\glui.h>
 #include <OpenGL\Glut\glut.h>
 
-// #include <gl\glui.h>
-// #include <gl\glut.h>
-
 // =================
 //   Public Member Functions
 // =================
@@ -33,19 +30,18 @@ void SlsMainWnd::SLSStatusCB(int value)
 
 	switch (value) 
 	{
-
 	case SLS_IDLE:							sprintf(str, "SLS_IDLE\n");						break;
 	case SLS_CAPTURE_IMAGE:			sprintf(str, "SLS_CAPTURE_IMAGE\n");		break;
 	case SLS_DETECT_ARTAG:			sprintf(str, "SLS_DETECT_ARTAG\n");		break;
 	case SLS_PROJECTION:				sprintf(str, "SLS_PROJECTION\n");			break;
 	case SLS_CALC_SHAPE:				sprintf(str, "SLS_CALC_SHAPE\n");			break;
 	
-	case SLS_EXIT:							printf("SLS_EXIT\n");						
+	case SLS_EXIT:							sprintf(str, "SLS_EXIT\n");
+													printf("SLS_EXIT\n");
 													system("pause");
 													exit(0);
 
 	default :									sprintf(str, "INVALID SLS MODE\n");			break;
-	
 	}
 
 	printf ("%s", str);
@@ -77,7 +73,7 @@ SlsMainWnd::SlsMainWnd(int glutWndHandler) :
 {
 	GLUI_Master.set_glutIdleFunc(SlsMainWnd::SLSIdleFunc);
 
-	m_GluiMainWnd = GLUI_Master.create_glui_subwindow(m_GlutSubWndHandler, GLUI_SUBWINDOW_RIGHT);
+	m_GluiMainWnd = GLUI_Master.create_glui_subwindow(m_GlutSubWndHandler, GLUI_SUBWINDOW_LEFT);
 	m_GluiMainWnd->set_main_gfx_window(m_GlutSubWndHandler);
 
 	new GLUI_StaticText(m_GluiMainWnd, "");
@@ -94,5 +90,3 @@ SlsMainWnd::SlsMainWnd(int glutWndHandler) :
 
 	m_GluiButtonExit = new GLUI_Button(m_GluiMainWnd, "Exit", SlsMainWnd::SLS_EXIT, SlsMainWnd::SLSStatusCB);
 }
-
-

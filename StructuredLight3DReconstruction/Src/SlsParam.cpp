@@ -9,7 +9,6 @@
 
 SlsParam::SlsParam()
 {
-
 	m_CameraWidth = 0;
 	m_CameraHeight = 0;
 	m_CameraDevice = 0;
@@ -32,12 +31,14 @@ SlsParam::SlsParam()
 	m_InitWindowPosX = 0;
 	m_InitWindowPosY = 0;
 
+	m_RasterX = 0;
+	m_RasterY = 0;
+
 	m_WaitTime = 0;
 
 	m_CheckerMetricSize = 0;
 	m_CheckerNumX = 0;
 	m_CheckerNumY = 0;
-
 }
 
 SlsParam::~SlsParam()
@@ -212,6 +213,9 @@ bool SlsParam::LoadFromXmlFile(const char * filename)
 	m_MainWindowHeight = m_ProjectorHeight;
 	m_InitWindowPosX = m_MainDisplayWidth - m_MainWindowInMainDisplayWidth;
 	
+	m_RasterX	= m_MainWindowInMainDisplayWidth - m_MonitorWidth - 10;
+	m_RasterY	= m_MainWindowHeight - 10;
+
 	return true;
 }
 
@@ -237,6 +241,7 @@ void SlsParam::printSlsParams() const
 	printf("Monitor <w, h> = <%d, %d>\n", m_MonitorWidth, m_MonitorHeight);
 	printf("SubMonitor <w, h> = <%d, %d>\n", m_SubMonitorWidth, m_SubMonitorHeight);
 	printf("InitWindowPos <x, y> = <%d, %d>\n", m_InitWindowPosX, m_InitWindowPosY);
+	printf("Raster Pos <x, y> = <%d, %d>\n", m_RasterX, m_RasterY);
 	printf("WaitTime = %d\n", m_WaitTime);
 	printf("Checker Info <Size, NumX, NumY> = <%d, %d, %d>\n", m_CheckerMetricSize, m_CheckerNumX, m_CheckerNumY);
 	

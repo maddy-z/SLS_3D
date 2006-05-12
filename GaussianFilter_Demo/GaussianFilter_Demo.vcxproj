@@ -40,7 +40,7 @@
     <ExecutablePath>..\3rd Party Lib\bin\OpenCV_2.3.1;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\zfm_project\StructuredLight3DReconstruction\3rd Party Lib\include\OpenCV_2.3.1;..\3rd Party Lib\include\;$(IncludePath)</IncludePath>
+    <IncludePath>..\3rd Party Lib\include\OpenCV_2.3.1;..\3rd Party Lib\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>..\3rd Party Lib\lib\OpenCV_2.3.1;$(LibraryPath)</LibraryPath>

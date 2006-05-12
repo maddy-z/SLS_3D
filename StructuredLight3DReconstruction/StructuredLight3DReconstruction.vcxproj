@@ -24,7 +24,9 @@
     <ClCompile Include="Src\SlsParam.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="SlsConfig.xml" />
+    <None Include="SlsConfig.xml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8A83D684-A85D-4CE1-B1DE-1F2FBF936494}</ProjectGuid>
@@ -34,7 +36,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -56,7 +58,7 @@
     <ExecutablePath>..\3rd Party Lib\bin\PGR_FlyCapture;..\3rd Party Lib\bin\TBB;..\3rd Party Lib\bin\OpenGL\Glut;..\3rd Party Lib\bin\OpenCV_2.3.1;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\3rd Party Lib\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\3rd Party Lib\include;..\3rd Party Lib\include\OpenCV_2.3.1;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>$(Path);..\3rd Party Lib\lib\PGR_FlyCapture;..\3rd Party Lib\lib\TinyXML;..\3rd Party Lib\lib\OpenGL\Glut;..\3rd Party Lib\lib\OpenGL\Glui;..\3rd Party Lib\lib\OpenCV_2.3.1;$(LibraryPath)</LibraryPath>
@@ -68,7 +70,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glui32.lib;tinyxml.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glui32.lib;tinyxml.lib;PGRFlyCapture.lib;pgrflycapturegui.lib;opencv_imgproc231d.lib;opencv_highgui231d.lib;opencv_core231d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

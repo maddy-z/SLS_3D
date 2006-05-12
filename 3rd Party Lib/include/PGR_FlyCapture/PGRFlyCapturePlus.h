@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2001-2006 Point Grey Research, Inc. All Rights Reserved.
+// Copyright 2001-2006 Point Grey Research, Inc. All Rights Reserved.
 // 
 // This software is the confidential and proprietary information of Point
 // Grey Research, Inc. ("Confidential Information").  You shall not

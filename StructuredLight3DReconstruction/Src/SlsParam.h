@@ -11,7 +11,8 @@ public:
 	enum CameraType 
 	{
 		DRAGONFLY_EXPRESS,
-		CANON_EOS
+		CANON_EOS,
+		DRAGONFLY2
 	};
 
 	// 
@@ -28,21 +29,35 @@ public:
 	bool LoadFromXmlFile(const char * filename);
 	bool LoadFromXmlFile(const std::string & filename);
 
-	/*
+	// 
+	// Getters
+	// 
+
 	int GetCameraWidth() const { return m_CameraWidth; }
 	int GetCameraHeight() const { return m_CameraHeight; }
+	CameraType GetCameraType() const { return m_CameraType; }
 
 	int GetProjectorWidth() const { return m_ProjectorWidth; }
 	int GetProjectorHeight() const { return m_ProjectorHeight; }
 
+	int GetMonitorWidth() const { return m_MonitorWidth; }
+	int GetMonitorHeight() const { return m_MonitorHeight; }
+
 	int GetMainWindowWidth() const { return m_MainWindowWidth; }
 	int GetMainWindowHeight() const { return m_MainWindowHeight; }
-	*/
+
+	int GetRasterPosX() const { return m_RasterX; }
+	int GetRasterPoxY() const { return m_RasterY; }
+
+	int GetWindowPosX() const { return m_InitWindowPosX; }
+	
+	// 
+	// Print Sls Parameters
+	// 
 
 	void printSlsParams() const;
 
-// private:
-public:
+private:
 
 	// Camera Size & Type & Device Num
 	int m_CameraWidth;
@@ -72,6 +87,10 @@ public:
 	// Init Window Position
 	int m_InitWindowPosX;
 	int m_InitWindowPosY;
+
+	// Raster Size
+	int m_RasterX;
+	int m_RasterY;
 
 	// Wait Time for Projector
 	int m_WaitTime;

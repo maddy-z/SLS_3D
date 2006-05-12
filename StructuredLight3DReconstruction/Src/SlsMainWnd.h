@@ -17,6 +17,7 @@ class SlsMainWnd
 {
 
 	friend class std::auto_ptr<SlsMainWnd>;
+	friend void Display(void);
 
 public:
 
@@ -52,14 +53,15 @@ public:
 	}
 
 	inline int getBindingGlutSubWnd() const { return m_GlutSubWndHandler; }
-	inline int getSlsMode() const { return m_SlsStatusMode; }
-
+	inline SlsMainWnd::SLS_MODE getSlsMode() const { return m_SlsStatusMode; }
+	
 	inline float getGluiVersion() const { if (m_GluiMainWnd) return GLUI_Master.get_version(); }
 
 private:
 
-	SlsMainWnd(int glutWndHandler = -1);										// Default Constructor
-
+	SlsMainWnd(int glutWndHandler = -1);										// Disabled Default Constructor
+	inline void setSlsMode(SlsMainWnd::SLS_MODE m) { m_SlsStatusMode = m; }
+	
 	static std::auto_ptr<SlsMainWnd> s_Instance;
 
 	int						m_GlutSubWndHandler;
