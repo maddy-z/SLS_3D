@@ -59,7 +59,8 @@ public:
 
 private:
 
-	SlsMainWnd(int glutWndHandler = -1);										// Disabled Default Constructor
+	// Disabled Default Constructor
+	SlsMainWnd(int glutWndHandler = -1);										
 	inline void setSlsMode(SlsMainWnd::SLS_MODE m) { m_SlsStatusMode = m; }
 	
 	static std::auto_ptr<SlsMainWnd> s_Instance;

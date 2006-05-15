@@ -4,6 +4,7 @@
   
   <Param>
     <!-- This is a Comment!! -->
+    
     <Camera width="640" height="480" type="DragonFly Express" device="2" />
     <Projector width="800" height="600" />
     <MainDisplay width="1280" />
@@ -30,7 +31,7 @@
     <Dist name="dist.txt" />
     <Rot name="rot.txt" />
     <Trans name="trans.txt" />
-    <ARTag config="marker_cfg_a4.txt" pos="marker_pos_a4.txt" />
+    <ARTag config="Data/ARTag/marker_cfg_a4.txt" pos="Data/ARTag/marker_pos_a4.txt" />
     <Obj name="data.obj" />
     <Extrpos name="extrpos.txt" />
     <Intrpos name="intrpos.txt" />

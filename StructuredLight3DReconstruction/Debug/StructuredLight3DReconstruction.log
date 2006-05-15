@@ -1,4 +1,4 @@
-﻿Build started 2006-5-12 22:25:37.
+﻿Build started 2006-5-16 0:01:52.
 Environment at start of build:
 MSBuildExtensionsPath32 = C:\Program Files\MSBuild
 MSBuildExtensionsPath = C:\Program Files\MSBuild
@@ -69,9 +69,9 @@ VTK = D:\PCL_dependencies\VTK 5.6
 windir = C:\WINDOWS
 wxWidgets = D:\PCL_dependencies\wxWidgets-2.9.2
 
-22:25:37.406     1>Project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" on node 2 (clean target(s)).
-22:25:37.406     1>Building with tools version "4.0".
-22:25:37.406     1>Target "_CheckForInvalidConfigurationAndPlatform: (TargetId:2)" in file "C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (entry point):
+00:01:52.937     1>Project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" on node 3 (clean target(s)).
+00:01:52.937     1>Building with tools version "4.0".
+00:01:52.937     1>Target "_CheckForInvalidConfigurationAndPlatform: (TargetId:2)" in file "C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (entry point):
                    Task "Error" skipped, due to false condition; ( '$(_InvalidConfigurationError)' == 'true' ) was evaluated as ( '' == 'true' ).
                    Task "Warning" skipped, due to false condition; ( '$(_InvalidConfigurationWarning)' == 'true' ) was evaluated as ( '' == 'true' ).
                    Using "Message" task from assembly "Microsoft.Build.Tasks.v4.0, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
@@ -84,85 +84,82 @@ wxWidgets = D:\PCL_dependencies\wxWidgets-2.9.2
                    Task "Error" skipped, due to false condition; ('$(OutDir)' != '' and !HasTrailingSlash('$(OutDir)')) was evaluated as ('D:\zfm_project\SLS_3D\Debug\' != '' and !HasTrailingSlash('D:\zfm_project\SLS_3D\Debug\')).
                    Task "Error" skipped, due to false condition; ('$(BaseIntermediateOutputPath)' != '' and !HasTrailingSlash('$(BaseIntermediateOutputPath)')) was evaluated as ('obj\' != '' and !HasTrailingSlash('obj\')).
                    Task "Error" skipped, due to false condition; ('$(IntermediateOutputPath)' != '' and !HasTrailingSlash('$(IntermediateOutputPath)')) was evaluated as ('Debug\' != '' and !HasTrailingSlash('Debug\')).
-22:25:37.406     1>Done building target "_CheckForInvalidConfigurationAndPlatform" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:2)
-22:25:37.406     1>Target "_PrepareForClean: (TargetId:3)" in file "C:\Program Files\MSBuild\Microsoft.Cpp\v4.0\Microsoft.BuildSteps.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "Clean" depends on it):
-                   Using "Delete" task from assembly "Microsoft.Build.Tasks.v4.0, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
-                   Task "Delete" (TaskId:4)
-                     Deleting file "Debug\StructuredLight3DReconstruction.lastbuildstate". (TaskId:4)
-                   Done executing task "Delete". (TaskId:4)
-22:25:37.406     1>Done building target "_PrepareForClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:3)
-22:25:37.406     1>Target "BeforeClean: (TargetId:4)" in file "C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "Clean" depends on it):
-22:25:37.406     1>Done building target "BeforeClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:4)
+00:01:52.937     1>Done building target "_CheckForInvalidConfigurationAndPlatform" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:2)
+00:01:52.937     1>Target "_PrepareForClean: (TargetId:3)" in file "C:\Program Files\MSBuild\Microsoft.Cpp\v4.0\Microsoft.BuildSteps.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "Clean" depends on it):
+                   Task "Delete" skipped, due to false condition; (Exists($(LastBuildState))) was evaluated as (Exists(Debug\StructuredLight3DReconstruction.lastbuildstate)).
+00:01:52.937     1>Done building target "_PrepareForClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:3)
+00:01:52.937     1>Target "BeforeClean: (TargetId:4)" in file "C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "Clean" depends on it):
+00:01:52.937     1>Done building target "BeforeClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:4)
                    Target "UnmanagedUnregistration" skipped, due to false condition; ((('$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' or '$(RegisterForComInterop)' != 'true' or '$(OutputType)' != 'library') or
                                        ('$(_AssemblyTimestampBeforeCompile)' == '')) and
                                       Exists('@(_UnmanagedRegistrationCache)')) was evaluated as ((('' != '' or '' != 'true' or 'exe' != 'library') or
                                        ('' == '')) and
                                       Exists('obj\StructuredLight3DReconstruction.vcxproj.UnmanagedRegistration.cache')).
-22:25:37.406     1>Target "CoreClean: (TargetId:5)" in file "C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "Clean" depends on it):
-                   Task "Delete" (TaskId:5)
-                   Done executing task "Delete". (TaskId:5)
+00:01:52.937     1>Target "CoreClean: (TargetId:5)" in file "C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "Clean" depends on it):
+                   Using "Delete" task from assembly "Microsoft.Build.Tasks.v4.0, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
+                   Task "Delete" (TaskId:4)
+                   Done executing task "Delete". (TaskId:4)
                    Using "ReadLinesFromFile" task from assembly "Microsoft.Build.Tasks.v4.0, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
-                   Task "ReadLinesFromFile" (TaskId:6)
-                   Done executing task "ReadLinesFromFile". (TaskId:6)
+                   Task "ReadLinesFromFile" (TaskId:5)
+                   Done executing task "ReadLinesFromFile". (TaskId:5)
                    Using "FindUnderPath" task from assembly "Microsoft.Build.Tasks.v4.0, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
+                   Task "FindUnderPath" (TaskId:6)
+                     Comparison path is "D:\zfm_project\SLS_3D\Debug\". (TaskId:6)
+                   Done executing task "FindUnderPath". (TaskId:6)
                    Task "FindUnderPath" (TaskId:7)
-                     Comparison path is "D:\zfm_project\SLS_3D\Debug\". (TaskId:7)
+                     Comparison path is "Debug\". (TaskId:7)
                    Done executing task "FindUnderPath". (TaskId:7)
-                   Task "FindUnderPath" (TaskId:8)
-                     Comparison path is "Debug\". (TaskId:8)
-                   Done executing task "FindUnderPath". (TaskId:8)
-                   Task "Delete" (TaskId:9)
-                   Done executing task "Delete". (TaskId:9)
+                   Task "Delete" (TaskId:8)
+                   Done executing task "Delete". (TaskId:8)
                    Using "RemoveDuplicates" task from assembly "Microsoft.Build.Tasks.v4.0, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
-                   Task "RemoveDuplicates" (TaskId:10)
-                   Done executing task "RemoveDuplicates". (TaskId:10)
+                   Task "RemoveDuplicates" (TaskId:9)
+                   Done executing task "RemoveDuplicates". (TaskId:9)
                    Using "MakeDir" task from assembly "Microsoft.Build.Tasks.v4.0, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
-                   Task "MakeDir" (TaskId:11)
-                   Done executing task "MakeDir". (TaskId:11)
+                   Task "MakeDir" (TaskId:10)
+                   Done executing task "MakeDir". (TaskId:10)
                    Using "WriteLinesToFile" task from assembly "Microsoft.Build.Tasks.v4.0, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
-                   Task "WriteLinesToFile" (TaskId:12)
-                   Done executing task "WriteLinesToFile". (TaskId:12)
-22:25:37.406     1>Done building target "CoreClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:5)
+                   Task "WriteLinesToFile" (TaskId:11)
+                   Done executing task "WriteLinesToFile". (TaskId:11)
+00:01:52.937     1>Done building target "CoreClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:5)
                    Target "AssignProjectConfiguration" skipped, due to false condition; ('@(ProjectReference)'!='') was evaluated as (''!='').
-22:25:37.406     1>Target "_SplitProjectReferencesByFileExistence: (TargetId:6)" in file "C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "CleanReferencedProjects" depends on it):
+00:01:52.937     1>Target "_SplitProjectReferencesByFileExistence: (TargetId:6)" in file "C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "CleanReferencedProjects" depends on it):
                    Task "ResolveNonMSBuildProjectOutput" skipped, due to false condition; ('$(BuildingInsideVisualStudio)'=='true' and '@(ProjectReferenceWithConfiguration)'!='') was evaluated as ('true'=='true' and ''!='').
-22:25:37.406     1>Done building target "_SplitProjectReferencesByFileExistence" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:6)
-22:25:37.406     1>Target "CleanReferencedProjects: (TargetId:7)" in file "C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "Clean" depends on it):
+00:01:52.937     1>Done building target "_SplitProjectReferencesByFileExistence" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:6)
+00:01:52.937     1>Target "CleanReferencedProjects: (TargetId:7)" in file "C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "Clean" depends on it):
                    Task "MSBuild" skipped, due to false condition; ('$(BuildingInsideVisualStudio)' != 'true' and '$(BuildProjectReferences)' == 'true' and '@(_MSBuildProjectReferenceExistent)' != '') was evaluated as ('true' != 'true' and 'true' == 'true' and '' != '').
-22:25:37.406     1>Done building target "CleanReferencedProjects" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:7)
-22:25:37.406     1>Target "CleanPublishFolder: (TargetId:8)" in file "C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "Clean" depends on it):
+00:01:52.937     1>Done building target "CleanReferencedProjects" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:7)
+00:01:52.937     1>Target "CleanPublishFolder: (TargetId:8)" in file "C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "Clean" depends on it):
                    Task "RemoveDir" skipped, due to false condition; ('$(PublishDir)'=='$(OutputPath)app.publish\' and Exists('$(PublishDir)')) was evaluated as ('D:\zfm_project\SLS_3D\Debug\app.publish\'=='D:\zfm_project\SLS_3D\Debug\app.publish\' and Exists('D:\zfm_project\SLS_3D\Debug\app.publish\')).
-22:25:37.406     1>Done building target "CleanPublishFolder" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:8)
-22:25:37.406     1>Target "AfterClean: (TargetId:9)" in file "C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "Clean" depends on it):
-22:25:37.406     1>Done building target "AfterClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:9)
+00:01:52.937     1>Done building target "CleanPublishFolder" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:8)
+00:01:52.937     1>Target "AfterClean: (TargetId:9)" in file "C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "Clean" depends on it):
+00:01:52.937     1>Done building target "AfterClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:9)
                    Target "EntityClean" skipped, due to false condition; ('@(EntityDeploy)' != '') was evaluated as ('' != '').
-22:25:37.406     1>Target "BeforeCppClean: (TargetId:10)" in file "C:\Program Files\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppClean.targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "CppClean" depends on it):
-22:25:37.406     1>Done building target "BeforeCppClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:10)
-22:25:37.406     1>Target "CoreCppClean: (TargetId:11)" in file "C:\Program Files\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppClean.targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "CppClean" depends on it):
-                   Task "MakeDir" (TaskId:13)
-                   Done executing task "MakeDir". (TaskId:13)
+00:01:52.937     1>Target "BeforeCppClean: (TargetId:10)" in file "C:\Program Files\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppClean.targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "CppClean" depends on it):
+00:01:52.937     1>Done building target "BeforeCppClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:10)
+00:01:52.937     1>Target "CoreCppClean: (TargetId:11)" in file "C:\Program Files\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppClean.targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "CppClean" depends on it):
+                   Task "MakeDir" (TaskId:12)
+                   Done executing task "MakeDir". (TaskId:12)
                    Using "CppClean" task from assembly "Microsoft.Build.CppTasks.Common, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
-                   Task "CppClean" (TaskId:14)
-22:25:38.265     1>C:\Program Files\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppClean.targets(74,5): warning : Access to the path 'C:\WINDOWS\MICROSOFT.NET\FRAMEWORK\V4.0.30319\CLR.DLL' is denied.
-                   Done executing task "CppClean". (TaskId:14)
-                   Task "WriteLinesToFile" (TaskId:15)
-                   Done executing task "WriteLinesToFile". (TaskId:15)
-22:25:38.359     1>Done building target "CoreCppClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:11)
-22:25:38.359     1>Target "AfterCppClean: (TargetId:12)" in file "C:\Program Files\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppClean.targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "CppClean" depends on it):
-22:25:38.359     1>Done building target "AfterCppClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:12)
-22:25:38.359     1>Target "PGInstrumentedClean: (TargetId:13)" in file "C:\Program Files\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppClean.targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "CppClean" depends on it):
-                   Task "Delete" (TaskId:16)
-                   Done executing task "Delete". (TaskId:16)
-22:25:38.359     1>Done building target "PGInstrumentedClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:13)
-22:25:38.359     1>Target "CppClean: (TargetId:14)" in file "C:\Program Files\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppClean.targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "Clean" depends on it):
-22:25:38.359     1>Done building target "CppClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:14)
-22:25:38.359     1>Target "Clean: (TargetId:15)" in file "C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (entry point):
-22:25:38.359     1>Done building target "Clean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:15)
-22:25:38.359     1>Done Building Project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (clean target(s)).
+                   Task "CppClean" (TaskId:13)
+                   Done executing task "CppClean". (TaskId:13)
+                   Task "WriteLinesToFile" (TaskId:14)
+                   Done executing task "WriteLinesToFile". (TaskId:14)
+00:01:52.953     1>Done building target "CoreCppClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:11)
+00:01:52.953     1>Target "AfterCppClean: (TargetId:12)" in file "C:\Program Files\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppClean.targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "CppClean" depends on it):
+00:01:52.953     1>Done building target "AfterCppClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:12)
+00:01:52.953     1>Target "PGInstrumentedClean: (TargetId:13)" in file "C:\Program Files\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppClean.targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "CppClean" depends on it):
+                   Task "Delete" (TaskId:15)
+                   Done executing task "Delete". (TaskId:15)
+00:01:52.953     1>Done building target "PGInstrumentedClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:13)
+00:01:52.953     1>Target "CppClean: (TargetId:14)" in file "C:\Program Files\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppClean.targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (target "Clean" depends on it):
+00:01:52.953     1>Done building target "CppClean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:14)
+00:01:52.953     1>Target "Clean: (TargetId:15)" in file "C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.Targets" from project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (entry point):
+00:01:52.953     1>Done building target "Clean" in project "StructuredLight3DReconstruction.vcxproj".: (TargetId:15)
+00:01:52.953     1>Done Building Project "D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (clean target(s)).
 
 Project Performance Summary:
-      953 ms  D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj   1 calls
-                953 ms  clean                                      1 calls
+       16 ms  D:\zfm_project\SLS_3D\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj   1 calls
+                 16 ms  clean                                      1 calls
 
 Target Performance Summary:
         0 ms  BeforeClean                                1 calls
@@ -178,18 +175,18 @@ Target Performance Summary:
         0 ms  _PrepareForClean                           1 calls
         0 ms  CppClean                                   1 calls
         0 ms  CoreClean                                  1 calls
-      953 ms  CoreCppClean                               1 calls
+       16 ms  CoreCppClean                               1 calls
 
 Task Performance Summary:
-        0 ms  MakeDir                                    2 calls
         0 ms  ReadLinesFromFile                          1 calls
-        0 ms  Delete                                     4 calls
+        0 ms  Delete                                     3 calls
+        0 ms  WriteLinesToFile                           2 calls
+        0 ms  MakeDir                                    2 calls
         0 ms  Message                                    2 calls
         0 ms  FindUnderPath                              2 calls
         0 ms  RemoveDuplicates                           1 calls
-       31 ms  WriteLinesToFile                           2 calls
-      922 ms  CppClean                                   1 calls
+       16 ms  CppClean                                   1 calls
 
 Build succeeded.
 
-Time Elapsed 00:00:00.95
+Time Elapsed 00:00:00.03

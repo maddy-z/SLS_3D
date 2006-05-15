@@ -3,6 +3,10 @@
 
 #include <string>
 
+// 
+// SLS Parameters
+// 
+
 class SlsParam
 {
 
@@ -45,13 +49,17 @@ public:
 
 	int GetMainWindowWidth() const { return m_MainWindowWidth; }
 	int GetMainWindowHeight() const { return m_MainWindowHeight; }
+	int GetMainWindowInMainDisplayWidth() const { return m_MainWindowInMainDisplayWidth; }
 
 	int GetRasterPosX() const { return m_RasterX; }
 	int GetRasterPoxY() const { return m_RasterY; }
 
 	int GetWindowPosX() const { return m_InitWindowPosX; }
 	
-	// 
+	std::string GetARTagConfigFilePath() const { return std::string(m_ARTagConfigFile); }
+	std::string GetARTagPosFilePath() const { return std::string(m_ARTagPosFile); }
+
+		// 
 	// Print Sls Parameters
 	// 
 

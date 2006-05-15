@@ -11,12 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\ARTagHelper.h" />
     <ClInclude Include="Src\BilateralFilter.h" />
     <ClInclude Include="Src\PointGreyCamera.h" />
     <ClInclude Include="Src\SlsMainWnd.h" />
     <ClInclude Include="Src\SlsParam.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\ARTagHelper.cpp" />
     <ClCompile Include="Src\BilateralFilter.cpp" />
     <ClCompile Include="Src\main.cpp" />
     <ClCompile Include="Src\PointGreyCamera.cpp" />
@@ -24,9 +26,7 @@
     <ClCompile Include="Src\SlsParam.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="SlsConfig.xml">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="SlsConfig.xml" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8A83D684-A85D-4CE1-B1DE-1F2FBF936494}</ProjectGuid>
@@ -55,13 +55,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ExecutablePath>..\3rd Party Lib\bin\PGR_FlyCapture;..\3rd Party Lib\bin\TBB;..\3rd Party Lib\bin\OpenGL\Glut;..\3rd Party Lib\bin\OpenCV_2.3.1;$(ExecutablePath)</ExecutablePath>
+    <ExecutablePath>..\3rd Party Lib\bin\PGR_FlyCapture;..\3rd Party Lib\bin\TBB;..\3rd Party Lib\bin\OpenCV_2.3.1;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>..\3rd Party Lib\include;..\3rd Party Lib\include\OpenCV_2.3.1;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>$(Path);..\3rd Party Lib\lib\PGR_FlyCapture;..\3rd Party Lib\lib\TinyXML;..\3rd Party Lib\lib\OpenGL\Glut;..\3rd Party Lib\lib\OpenGL\Glui;..\3rd Party Lib\lib\OpenCV_2.3.1;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\3rd Party Lib\lib\ARTag;$(Path);..\3rd Party Lib\lib\PGR_FlyCapture;..\3rd Party Lib\lib\TinyXML;..\3rd Party Lib\lib\OpenGL\Glut;..\3rd Party Lib\lib\OpenGL\Glui;..\3rd Party Lib\lib\OpenCV_2.3.1;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -70,7 +70,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glui32.lib;tinyxml.lib;PGRFlyCapture.lib;pgrflycapturegui.lib;opencv_imgproc231d.lib;opencv_highgui231d.lib;opencv_core231d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glui32.lib;tinyxml.lib;PGRFlyCapture.lib;pgrflycapturegui.lib;opencv_imgproc231d.lib;artag_rev2_vs2005.lib;opencv_highgui231d.lib;opencv_core231d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
