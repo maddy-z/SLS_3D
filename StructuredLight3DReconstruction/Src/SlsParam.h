@@ -52,7 +52,7 @@ public:
 	int GetMainWindowInMainDisplayWidth() const { return m_MainWindowInMainDisplayWidth; }
 
 	int GetRasterPosX() const { return m_RasterX; }
-	int GetRasterPoxY() const { return m_RasterY; }
+	int GetRasterPosY() const { return m_RasterY; }
 
 	int GetWindowPosX() const { return m_InitWindowPosX; }
 	

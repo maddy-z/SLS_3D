@@ -30,6 +30,9 @@
     <ClInclude Include="Src\ARTagHelper.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="GrayCode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\SlsMainWnd.cpp">
@@ -48,6 +51,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Src\ARTagHelper.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GrayCode.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

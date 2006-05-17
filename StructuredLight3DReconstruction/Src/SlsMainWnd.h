@@ -26,7 +26,8 @@ public:
 		SLS_IDLE,
 		SLS_CAPTURE_IMAGE,
 		SLS_DETECT_ARTAG,
-		SLS_PROJECTION,
+		SLS_INIT_PROJECTING,
+		SLS_PROJECTING,
 		SLS_CALC_SHAPE,
 		SLS_EXIT
 	};
@@ -59,7 +60,10 @@ public:
 
 private:
 
+	// 
 	// Disabled Default Constructor
+	// 
+	
 	SlsMainWnd(int glutWndHandler = -1);										
 	inline void setSlsMode(SlsMainWnd::SLS_MODE m) { m_SlsStatusMode = m; }
 	

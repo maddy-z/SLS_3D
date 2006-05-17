@@ -30,18 +30,19 @@ void SlsMainWnd::SLSStatusCB(int value)
 
 	switch (value) 
 	{
-	case SLS_IDLE:							sprintf(str, "SLS_IDLE\n");						break;
-	case SLS_CAPTURE_IMAGE:			sprintf(str, "SLS_CAPTURE_IMAGE\n");		break;
-	case SLS_DETECT_ARTAG:			sprintf(str, "SLS_DETECT_ARTAG\n");		break;
-	case SLS_PROJECTION:				sprintf(str, "SLS_PROJECTION\n");			break;
-	case SLS_CALC_SHAPE:				sprintf(str, "SLS_CALC_SHAPE\n");			break;
+	case SLS_IDLE:							sprintf(str, "SLS_IDLE\n");							break;
+	case SLS_CAPTURE_IMAGE:			sprintf(str, "SLS_CAPTURE_IMAGE\n");			break;
+	case SLS_DETECT_ARTAG:			sprintf(str, "SLS_DETECT_ARTAG\n");			break;
+	case SLS_INIT_PROJECTING:		sprintf(str, "SLS_INIT_PROJECTING\n");		break;
+	case SLS_PROJECTING:				sprintf(str, "SLS_PROJECTING\n");				break;
+	case SLS_CALC_SHAPE:				sprintf(str, "SLS_CALC_SHAPE\n");				break;
 	
 	case SLS_EXIT:							sprintf(str, "SLS_EXIT\n");
 													printf("SLS_EXIT\n");
 													system("pause");
 													exit(0);
 
-	default :									sprintf(str, "INVALID SLS MODE\n");			break;
+	default :									sprintf(str, "INVALID SLS MODE\n");				break;
 	}
 
 	printf ("%s", str);
@@ -83,7 +84,7 @@ SlsMainWnd::SlsMainWnd(int glutWndHandler) :
 	m_GluiButtonCapture = new GLUI_Button (m_GluiMainWnd, "Capture Image", SlsMainWnd::SLS_CAPTURE_IMAGE, SlsMainWnd::SLSStatusCB);
 	m_GluiButtonDetectArtag = new GLUI_Button (m_GluiMainWnd, "Detect ARTag", SlsMainWnd::SLS_DETECT_ARTAG, SlsMainWnd::SLSStatusCB);
 
-	m_GluiButtonProject = new GLUI_Button (m_GluiMainWnd, "Project Structured Light", SlsMainWnd::SLS_PROJECTION, SlsMainWnd::SLSStatusCB);
+	m_GluiButtonProject = new GLUI_Button (m_GluiMainWnd, "Project Structured Light", SlsMainWnd::SLS_INIT_PROJECTING, SlsMainWnd::SLSStatusCB);
 	m_GluiButtonCalcShape = new GLUI_Button (m_GluiMainWnd, "Calc 3D Shape", SlsMainWnd::SLS_CALC_SHAPE, SlsMainWnd::SLSStatusCB);
 	new GLUI_StaticText(m_GluiMainWnd, "");
 	new GLUI_Separator(m_GluiMainWnd);

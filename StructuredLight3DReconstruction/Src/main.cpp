@@ -57,6 +57,7 @@ bool CaptureImage(unsigned char * img)
 		
 		const unsigned char * srcData = capturedRawImage;
 		unsigned char * destData = processedImage;
+		
 		for (int i = 0; i < camH * camW; ++i, srcData += 4, destData += 3)
 		{
 			destData[0] = srcData[2];
@@ -70,39 +71,48 @@ bool CaptureImage(unsigned char * img)
 	return false;
 }
 
+// ==============
+// Main Loop
+// ==============
+
 static void Display(void)
 {
 	assert ( gluiMainWndHandler != NULL );
 
-	int monitorW = slsParameters->GetMonitorWidth();
-	int monitorH = slsParameters->GetMonitorHeight();
-
 	int cameraW = slsParameters->GetCameraWidth();
 	int cameraH = slsParameters->GetCameraHeight();
-
 	int projectorW = slsParameters->GetProjectorWidth();
 	int projectorH = slsParameters->GetProjectorHeight();
+	int monitorW = slsParameters->GetMonitorWidth();
+	int monitorH = slsParameters->GetMonitorHeight();
 
 	int mainWndW = slsParameters->GetMainWindowWidth();
 	int mainWndH = slsParameters->GetMainWindowHeight();
 	
 	int rasterX = slsParameters->GetRasterPosX();
-	int rasterY = slsParameters->GetRasterPoxY();
+	int rasterY = slsParameters->GetRasterPosY();
 
 	float pixelZoomX = (float)(monitorW) / (float)(cameraW);
 	float pixelZoomY = (float)(monitorH) / (float)(cameraH);
+	
+	bool isCaptured = false;
 
-	bool flag = false;
+	//
+	// Processing SLS Status
+	// 
 
 	SlsMainWnd::SLS_MODE mode = gluiMainWndHandler->getSlsMode();
-	
 	switch ( mode )
 	{
+	
 	case SlsMainWnd::SLS_IDLE:
 		break;
 
 	case SlsMainWnd::SLS_CAPTURE_IMAGE:
-		flag = CaptureImage(processedImage);
+		isCaptured = CaptureImage(processedImage);
+		if ( !(isCaptured) ) { 
+			std::cout << "Invalid Captured Image" << std::endl;
+		}
 		gluiMainWndHandler->setSlsMode(SlsMainWnd::SLS_IDLE);
 		
 		break;
@@ -113,14 +123,25 @@ static void Display(void)
 
 		break;
 
-	case SlsMainWnd::SLS_PROJECTION:
+	case SlsMainWnd::SLS_INIT_PROJECTING:
+		// TODO:
+		gluiMainWndHandler->setSlsMode(SlsMainWnd::SLS_PROJECTING);
+		
+		break;
+
+	case SlsMainWnd::SLS_PROJECTING:
 
 		break;
 
 	case SlsMainWnd::SLS_CALC_SHAPE:
 		
 		break;
+	
 	}
+
+	// 
+	// Initialize OpenGL Environment
+	// 
 
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -129,7 +150,7 @@ static void Display(void)
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, mainWndW, 0, mainWndH, 0.0f, 1.0f);
+	glOrtho(0, mainWndW, 0, mainWndH, -1.0f, 1.0f);
 
 	glMatrixMode(GL_MODELVIEW);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -145,12 +166,16 @@ static void Display(void)
 	glPixelZoom(pixelZoomX, -pixelZoomY);
 	glDrawPixels(cameraW, cameraH, GL_RGB, GL_UNSIGNED_BYTE, processedImage);
 
+	// 
+	// Draw Identitied Marker
+	// 
+
 	glLoadIdentity();
 	glTranslatef(rasterX, mainWndH - monitorH - 10, 0.0f);
 	artagHelper->DrawMarkersInCameraImage(pixelZoomX, pixelZoomY);
 
 	// 
-	// Projecting White Light
+	// Project White Light
 	// 
 
 	glLoadIdentity();
@@ -162,6 +187,13 @@ static void Display(void)
 		glVertex2i(projectorW, projectorH);
 		glVertex2i(0, projectorH);
 	glEnd();
+
+	if (mode == SlsMainWnd::SLS_PROJECTING) 
+	{
+		glLoadIdentity();
+		glTranslatef(slsParameters->GetMainWindowInMainDisplayWidth(), 0.0f, 0.0f);
+		// Display Gray Code
+	}
 
 	// if (mode == SlsMainWnd::SLS_DETECT_ARTAG) 
 	// {
@@ -206,6 +238,9 @@ int main(int argc, char ** argv)
 
 	capturedRawImage = new unsigned char[slsParameters->GetCameraHeight() * slsParameters->GetCameraWidth() * 4];
 	processedImage	 = new unsigned char[slsParameters->GetCameraHeight() * slsParameters->GetCameraWidth() * 3];
+
+	memset(capturedRawImage, 0, slsParameters->GetCameraHeight() * slsParameters->GetCameraWidth() * 4);
+	memset(processedImage, 0, slsParameters->GetCameraHeight() * slsParameters->GetCameraWidth() * 3);
 
 	// ===================
 	//   Glut Code & Glui Code

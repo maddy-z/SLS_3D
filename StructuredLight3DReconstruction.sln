@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BilateralFilter_Demo", "Bil
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GaussianFilter_Demo", "GaussianFilter_Demo\GaussianFilter_Demo.vcxproj", "{106F25EC-521A-4EE4-8AA7-7D4DAC14002B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GrayCode_Demo", "GrayCode_Demo\GrayCode_Demo.vcxproj", "{8A1F2A3B-8070-4981-ACA9-85669C1D03ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -31,6 +33,10 @@ Global
 		{106F25EC-521A-4EE4-8AA7-7D4DAC14002B}.Debug|Win32.Build.0 = Debug|Win32
 		{106F25EC-521A-4EE4-8AA7-7D4DAC14002B}.Release|Win32.ActiveCfg = Release|Win32
 		{106F25EC-521A-4EE4-8AA7-7D4DAC14002B}.Release|Win32.Build.0 = Release|Win32
+		{8A1F2A3B-8070-4981-ACA9-85669C1D03ED}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8A1F2A3B-8070-4981-ACA9-85669C1D03ED}.Debug|Win32.Build.0 = Debug|Win32
+		{8A1F2A3B-8070-4981-ACA9-85669C1D03ED}.Release|Win32.ActiveCfg = Release|Win32
+		{8A1F2A3B-8070-4981-ACA9-85669C1D03ED}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
