@@ -33,6 +33,12 @@
     <ClInclude Include="Src\GrayCode.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Src\ExtrCalibrator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\SlsUtils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\SlsMainWnd.cpp">
@@ -54,6 +60,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Src\GrayCode.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ExtrCalibrator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\SlsUtils.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

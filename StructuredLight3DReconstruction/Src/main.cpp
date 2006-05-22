@@ -9,19 +9,22 @@
 
 #include	"SlsMainWnd.h"
 #include	"SlsParam.h"
+#include	"SlsUtils.h"
 #include	"PointGreyCamera.h"
 #include	"ARTagHelper.h"
+#include	"ExtrCalibrator.h"
 
 // =======================
 //	 MACROS DEFINITIONS
 // =======================
 
 #define						SLS_CONFIG_XMLFILEPATH						"SlsConfig.xml"
-#define						SLS_CAPTUREDIMAGE_WINNAME				"Captured Image"
+#define						SLS_CAPTUREDIMAGE_WINNAME				"Captured Raw Image"
+#define						SLS_PROCIMAGE_WINNAME						"Processed Image"
 
-// ===================
+// ======================
 //  Global Variables
-// ===================
+// ======================
 
 int								glutMainWndHandler		= -1;
 
@@ -29,13 +32,14 @@ SlsMainWnd				* gluiMainWndHandler	= NULL;
 SlsParam					* slsParameters				= NULL;
 PointGreyCamera		* pgCamera					= NULL;
 ARTagHelper				* artagHelper					= NULL;
+ExtrCalibrator			* extrCalib					= NULL;
 
 unsigned char			* capturedRawImage		= NULL;
 unsigned char			* processedImage			= NULL;
 
-// ======================
+// =======================
 //  Global Utility Functions
-// ======================
+// =======================
 
 void SphereDisplay(void)
 {
@@ -45,18 +49,25 @@ void SphereDisplay(void)
 	glutSwapBuffers();
 }
 
-bool CaptureImage(unsigned char * img)
+bool CaptureImage ( unsigned char * rawImg, unsigned char * procImg, const cv::Mat & camIntr, const cv::Mat & camDist )
 {
 	int camH = slsParameters->GetCameraHeight();
 	int camW = slsParameters->GetCameraWidth();
 
 	if (slsParameters->GetCameraType() == SlsParam::DRAGONFLY_EXPRESS) 
 	{
-		pgCamera->Capture(capturedRawImage);
-		// ShowImageInOpenCvWindow(capturedRawImage, camH, camW);
+		pgCamera->Capture(rawImg);
 		
-		const unsigned char * srcData = capturedRawImage;
-		unsigned char * destData = processedImage;
+		cv::Mat distortedImg(camH, camW, CV_8UC4);
+		cv::Mat unDistortedImg = distortedImg.clone();
+		
+		CopyRawImageBuf2CvMat(rawImg, 4, distortedImg);
+		cv::undistort(distortedImg, unDistortedImg, camIntr, camDist);
+		CopyCvMat2RawImageBuf(unDistortedImg, procImg, 3);
+
+		/*
+		const unsigned char * srcData = rawImg;
+		unsigned char * destData = procImg;
 		
 		for (int i = 0; i < camH * camW; ++i, srcData += 4, destData += 3)
 		{
@@ -64,6 +75,7 @@ bool CaptureImage(unsigned char * img)
 			destData[1] = srcData[1];
 			destData[2] = srcData[0];
 		}
+		*/
 
 		return true;
 	}
@@ -109,10 +121,24 @@ static void Display(void)
 		break;
 
 	case SlsMainWnd::SLS_CAPTURE_IMAGE:
-		isCaptured = CaptureImage(processedImage);
+
+		extrCalib->PrintMatrix(extrCalib->GetMatrix(ExtrCalibrator::CAMERA, ExtrCalibrator::INTR));
+		extrCalib->PrintMatrix(extrCalib->GetMatrix(ExtrCalibrator::CAMERA, ExtrCalibrator::DIST));
+
+		isCaptured = CaptureImage (	capturedRawImage, 
+													processedImage, 
+													extrCalib->GetMatrix(ExtrCalibrator::CAMERA, ExtrCalibrator::INTR),
+													extrCalib->GetMatrix(ExtrCalibrator::CAMERA, ExtrCalibrator::DIST)
+													);
+
+		// memset(processedImage, 0, cameraW * cameraH * 3);
+		
 		if ( !(isCaptured) ) { 
 			std::cout << "Invalid Captured Image" << std::endl;
 		}
+
+		ShowImageInOpenCvWindow(SLS_CAPTUREDIMAGE_WINNAME, capturedRawImage, 4, cameraH, cameraW);
+		ShowImageInOpenCvWindow(SLS_PROCIMAGE_WINNAME, processedImage, 3, cameraH, cameraW);
 		gluiMainWndHandler->setSlsMode(SlsMainWnd::SLS_IDLE);
 		
 		break;
@@ -193,16 +219,8 @@ static void Display(void)
 		glLoadIdentity();
 		glTranslatef(slsParameters->GetMainWindowInMainDisplayWidth(), 0.0f, 0.0f);
 		// Display Gray Code
+		// TODO:
 	}
-
-	// if (mode == SlsMainWnd::SLS_DETECT_ARTAG) 
-	// {
-	//		glLoadIdentity();
-	//		glTranslatef(rasterX, rasterY, 0.0f);
-	//		artagHelper->DrawMarkersInCameraImage(pixelZoomX, pixelZoomY);
-
-	//		gluiMainWndHandler->setSlsMode(SlsMainWnd::SLS_IDLE);
-	// }
 
 	// 
 	// Swap Buffers
@@ -232,9 +250,16 @@ int main(int argc, char ** argv)
 	artagHelper = new ARTagHelper(
 		slsParameters->GetCameraWidth(), 
 		slsParameters->GetCameraHeight(), 
-		slsParameters->GetARTagConfigFilePath().c_str(),
-		slsParameters->GetARTagPosFilePath().c_str()
+		slsParameters->GetARTagConfigFilePath(),
+		slsParameters->GetARTagPosFilePath()
 		);
+
+	extrCalib = new ExtrCalibrator(artagHelper->GetMarkerNumber());
+	extrCalib->ReadIntrParaFile(	slsParameters->GetIntrFilePath(SlsParam::CAMERA),
+												slsParameters->GetDistortionFilePath(SlsParam::CAMERA),
+												slsParameters->GetIntrFilePath(SlsParam::PROJECTOR),
+												slsParameters->GetDistortionFilePath(SlsParam::PROJECTOR)
+												);
 
 	capturedRawImage = new unsigned char[slsParameters->GetCameraHeight() * slsParameters->GetCameraWidth() * 4];
 	processedImage	 = new unsigned char[slsParameters->GetCameraHeight() * slsParameters->GetCameraWidth() * 3];
@@ -257,10 +282,10 @@ int main(int argc, char ** argv)
 	glutMainWndHandler = glutCreateWindow("Structured Light 3D Reconstruction System");
 	gluiMainWndHandler = SlsMainWnd::Instance(glutMainWndHandler);
 
-	// glutDisplayFunc(SphereDisplay);
 	glutPositionWindow(slsParameters->GetWindowPosX(), 0);
 	glutDisplayFunc(Display);
-	
+	// glutDisplayFunc(SphereDisplay);
+
 	// 
 	// Start to Glut Loop
 	// 
@@ -271,33 +296,4 @@ int main(int argc, char ** argv)
 	delete [] processedImage;
 
 	exit(EXIT_SUCCESS);
-}
-
-// ==================
-// Experiment Functions
-// ==================
-
-void ShowImageInOpenCvWindow(unsigned char * img, int camH, int camW)
-{
-	cv::Mat destImg(cv::Size(camW, camH), CV_8UC3);
-
-	unsigned char * srcData = img;
-	unsigned char * destImgRow = destImg.data;
-	
-	for (int i = 0; i < destImg.rows; ++i, destImgRow += destImg.step) 
-	{
-		unsigned char * destImgData = destImgRow;
-		
-		for (int j = 0; j < destImg.cols; ++j, destImgData += destImg.channels(), srcData += 4) 
-		{
-			destImgData[0] = srcData[2];
-			destImgData[1] = srcData[1];
-			destImgData[2] = srcData[0];
-		}
-	}
-		
-	cv::namedWindow(SLS_CAPTUREDIMAGE_WINNAME, CV_WINDOW_AUTOSIZE);
-	cv::imshow(SLS_CAPTUREDIMAGE_WINNAME, destImg);
-
-	return;
 }

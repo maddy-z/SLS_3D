@@ -4,12 +4,17 @@
 //#define		MARKER_CONFIG_FILE			"../../data/marker_cfg_RealPlay.txt"
 //#define		MARKER_NUM_MAX				6
 
+//
+// Forward Declaration
+// 
+
+class GrayCode;
+
 // 
 // Class -- ARTagHelper
 // 
 
 class ARTagHelper
-
 {
 
 private:
@@ -18,30 +23,33 @@ private:
 	int m_CameraWidth;
 	int m_CameraHeight;
 
-	// LUT for marker ID
-	int * m_MarkerID_LUT;
+	int * m_MarkerID_LUT;													// LUT for marker ID
+	int m_MarkerNum;															// number of markers
 
-	char m_ConfigFile[128];												// ARTag config file name
-	char m_CornerPos[128];												// name of a file which contains 3d position of corners of ARTag markers in world-coordinate
+	// char m_ConfigFile[128];												// ARTag config file name
+	// char m_CornerPos[128];												// name of a file which contains 3d position of corners of ARTag markers in world-coordinate
 
-public:
-
-	// number of markers
-	int m_MarkerNum;
-
-	double ( * m_MarkerCornerPos3d )[3];						// 3d marker corner position in world-coordinate
-	double ( * m_MarkerCornerPosCam2d )[2];					// 2d marker corner position in camera-coordinate
-	double ( * m_MarkerCornerPosPro2d)[2];					// 2d marker corner position in projector-coordinate
+	double ( * m_MarkerCornerPos3d )[3];							// 3d marker corner position in world-coordinate
+	double ( * m_MarkerCornerPosCam2d )[2];						// 2d marker corner position in camera-coordinate
+	double ( * m_MarkerCornerPosPro2d )[2];						// 2d marker corner position in projector-coordinate
 
 	// Flag for each marker
-	//			- true: marker corner is visible from camera/projector
-	//			- false: marker corner is not visible
-	//			( for projector, visible means gray code can be obtained at the marker corner )
-	
+	// 
+	//	- True: marker corner is visible from Camera / Projector
+	//	- False: marker corner is not visible
+	//	( for projector, visible means gray code can be obtained at the marker corner )
+	//
+
 	bool	* m_ValidFlagCam;
 	bool	* m_ValidFlagPro;
 
 public:
+
+	enum 
+	{
+		CAMERA,
+		PROJECTOR
+	};
 
 	// =========================
 	// Constructor & Destructor
@@ -51,9 +59,15 @@ public:
 	virtual ~ARTagHelper();
 
 	void FindMarkerCorners ( unsigned char * image );
-	// void GetMarkerCornerPos2dInProjector ( CGrayCode * gc );
+	void GetMarkerCornerPos2dInProjector ( GrayCode * gc );
 	void DrawMarkersInCameraImage ( float pixZoomX, float pixZoomY );
 
+	// 
+	// Getters
+	// 
+
+	int GetMarkerNumber() const { return m_MarkerNum; }
+	void GetValidFlagArray(int deviceType, const bool *& validArray, int & markerNum) const;
 };
 
 #endif

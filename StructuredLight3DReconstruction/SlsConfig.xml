@@ -3,6 +3,7 @@
 <SLSConfiguration version="1.0">
   
   <Param>
+    
     <!-- This is a Comment!! -->
     
     <Camera width="640" height="480" type="DragonFly Express" device="2" />
@@ -17,7 +18,10 @@
   </Param>
   
   <DirName>
-    <Data name="../../data" />
+    
+    <!-- <Data name="../../data" /> -->
+    
+    <Data name="Data" />
     <GrayCode name="GrayCode" />
     <Camera name="Camera" />
     <Projector name="Projector" />
@@ -31,7 +35,7 @@
     <Dist name="dist.txt" />
     <Rot name="rot.txt" />
     <Trans name="trans.txt" />
-    <ARTag config="Data/ARTag/marker_cfg_a4.txt" pos="Data/ARTag/marker_pos_a4.txt" />
+    <ARTag config="marker_cfg_a4.txt" pos="marker_pos_a4.txt" />
     <Obj name="data.obj" />
     <Extrpos name="extrpos.txt" />
     <Intrpos name="intrpos.txt" />

@@ -47,8 +47,7 @@ int PointGreyCamera::Property::Get( void )
 
 int PointGreyCamera::Property::GetRatio( float& va, float& vb )
 {
-	// 获得属性值 A 和 B 在其取值范围内所占的比例
-	Get();
+	Get();										// 获得属性值 A 和 B 在其取值范围内所占的比例
 	GetRange();
 
 	if ( min == max ) 
@@ -66,8 +65,7 @@ int PointGreyCamera::Property::GetRatio( float& va, float& vb )
 
 int PointGreyCamera::Property::GetRange( void )
 {
-	// 获得该属性的最大和最小值
-	FlyCaptureError	error;
+	FlyCaptureError	error;						// 获得该属性的最大值和最小值
 	
 	error = flycaptureGetCameraPropertyRangeEx(
 		fcContext,
@@ -93,8 +91,7 @@ int PointGreyCamera::Property::Set( const bool one_push,
 													  const int va, 
 													  const int vb )
 {
-	// 设置对应属性的值
-	FlyCaptureError	error;
+	FlyCaptureError	error;												// 设置对应属性的值
 	error = flycaptureSetCameraPropertyEx( fcContext, fcProperty, one_push, on_off, auto_c, va, vb );
 
 	PG_HANDLE_ERROR( error, "flycaptureSetCameraPropertyEx()" );
@@ -108,8 +105,7 @@ int PointGreyCamera::Property::SetRatio(
 	const bool auto_c,
 	const float va, const float vb )
 {
-	// 设置属性值所占的当前比例
-	GetRange();
+	GetRange();								// 设置属性值所占的当前比例
 
 	int	iva, ivb;
 	if ( min == max ) {
@@ -133,8 +129,7 @@ int PointGreyCamera::Property::SetRatio(
 
 int PointGreyCamera::Property::Print( int num )
 {
-	// 打印出摄像头该属性的值
-	GetRange();
+	GetRange();									// 打印出摄像头该属性的值
 
 	bool	auto_c;
 	int		va, vb;
@@ -209,7 +204,7 @@ void PointGreyCamera::PrintProperties( void )
 	gain->Print();
 
 	std::cout << "white balance: ";
-	white_balance->Print( 2 );					// 该属性有两个值
+	white_balance->Print( 2 );								// 该属性有两个值
 }
 
 float PointGreyCamera::GetBrightnessRatio( void )
@@ -631,6 +626,7 @@ int PointGreyCamera::InitSynchronized( void )
 	//
 	// Create a context for and initialize every camera on the bus.
 	//
+
 	/*
 	printf( "Initializing multiple capture camera %u.\n", 0 );
 	error = ::flycaptureInitializePlus( 
@@ -842,23 +838,24 @@ int PointGreyCamera::Start( void )
 // Capture Image
 // 
 
-int PointGreyCamera::Capture( unsigned char * buf )
+int PointGreyCamera::Capture ( unsigned char * buf )
 {
-	FlyCaptureImage	capturedImg;
-	FlyCaptureImage	convertedImg;
+	FlyCaptureImage capturedImg;
+	FlyCaptureImage convertedImg;
 
-	error = flycaptureGrabImage2( context, &capturedImg );
+	error = flycaptureGrabImage2 ( context, &capturedImg );
 	PG_HANDLE_ERROR( error, "flycaptureGrabImage2()" );
 
 	unsigned char * tmpBuf = new unsigned char[(capturedImg.iRows) * (capturedImg.iCols) * 4];
+	memset(tmpBuf, 0, (capturedImg.iRows) * (capturedImg.iCols) * 4);
 	convertedImg.pData = tmpBuf;
 	convertedImg.pixelFormat = FLYCAPTURE_BGRU;
 
 	error = flycaptureConvertImage( context, &capturedImg, &convertedImg );
 	PG_HANDLE_ERROR( error, "flycaptureConvertImage()" );
 
-	// unsigned char * srcRow = convertedImg.pData;
-	unsigned char * srcRow = tmpBuf;
+	unsigned char * srcRow = convertedImg.pData;
+	// unsigned char * srcRow = tmpBuf;
 	unsigned char * srcData = NULL;
 	unsigned char * destData = buf;
 
@@ -868,9 +865,10 @@ int PointGreyCamera::Capture( unsigned char * buf )
 		
 		for (int j = 0; j < convertedImg.iCols; ++j, srcData += 4, destData += 4) 
 		{
-			destData[0] = srcData[0];
+			destData[0] = srcData[2];
 			destData[1] = srcData[1];
-			destData[2] = srcData[2];
+			destData[2] = srcData[0];
+
 			destData[3] = srcData[3];
 		}
 	}

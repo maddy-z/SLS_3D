@@ -8,13 +8,11 @@
 #include <OpenGL\Glui\glui.h>
 #include <OpenGL\Glut\glut.h>
 
-#include <OpenCV_2.3.1\opencv2\opencv.hpp>
-
 #include "GrayCode.h"
 
-// 
+// =====================
 // Constructor & Destructor
-// 
+// =====================
 
 GrayCode::GrayCode ( int cameraW, int cameraH, int projectorW, int projectorH, bool bSlit, char * dirname )
 {
@@ -25,7 +23,7 @@ GrayCode::GrayCode ( int cameraW, int cameraH, int projectorW, int projectorH, b
 	m_CodeResolution = 1;				// 1
 
 	m_SlitWidth = 3;
-	m_SlitInterval = 16;				// 16
+	m_SlitInterval = 16;					// 16
 	m_bSlit = bSlit;
 
 	m_NormThres = 70;
@@ -35,7 +33,7 @@ GrayCode::GrayCode ( int cameraW, int cameraH, int projectorW, int projectorH, b
 	// skip_graycode = true;
 
 	m_DispMode = DISP_IDLE;
-
+	
 	m_CameraWidth = cameraW;
 	m_CameraHeight = cameraH;
 	m_ProjectorWidth = projectorW;
@@ -46,7 +44,7 @@ GrayCode::GrayCode ( int cameraW, int cameraH, int projectorW, int projectorH, b
 	m_Black = new unsigned char[m_CameraWidth * m_CameraHeight * 3];
 	m_bSlitImg = new unsigned char[m_CameraWidth * m_CameraHeight];
 	
-	for ( int i = 0; i < 2; i++ )
+	for ( int i = 0; i < 2; ++i )
 	{
 		m_C2P[i] = new int[m_CameraWidth * m_CameraHeight];
 		m_C2P_UC[i] = new unsigned char[m_CameraWidth * m_CameraHeight];
@@ -60,9 +58,8 @@ GrayCode::GrayCode ( int cameraW, int cameraH, int projectorW, int projectorH, b
 	m_Illuminance = new unsigned char[m_CameraWidth * m_CameraHeight * 3];
 	m_Compensate  = new unsigned char[m_CameraWidth * m_CameraHeight * 3];
 
-	sprintf( m_DirName, "%s", dirname );
+	sprintf ( m_DirName, "%s", dirname );
 }
-
 GrayCode::~GrayCode()
 {
 	delete [] m_Diff;
@@ -84,11 +81,42 @@ GrayCode::~GrayCode()
 	delete [] m_Compensate;
 }
 
-void GrayCode::InitDispCode( int nProjSeq )
+void GrayCode::InitDispCode ( int nProjSeq, int dispMode )
 {
-	m_DispMode = GrayCode::DISP_GRAYCODE;
-	m_GBit = m_CodeDepth - 1;
-	m_NPMode = GrayCode::POSITIVE;
+	m_ProjSeqNum = dispMode;
+	InitDispCode(nProjSeq);
+}
+void GrayCode::InitDispCode ( int nProjSeq )
+{
+	m_NPMode = POSITIVE;
+	m_ProjSeqNum = nProjSeq;
+	
+	switch ( m_DispMode )
+	{
+
+	case DISP_GRAYCODE:
+		m_GBit = m_CodeDepth - 1;
+
+		for ( int i = 0; i < m_CameraWidth * m_CameraHeight; ++i ) {
+			m_C2P[m_HVMode][i] = 0;
+		}
+
+		break;
+
+	case DISP_SLIT:
+		m_CurrSlitNum = 0;
+
+		for ( int i = 0; i < m_CameraWidth * m_CameraHeight; ++i )
+		{
+			m_C2P_DB[m_HVMode][i] = 0.0;
+			m_Sum[i] = 0.0;
+			m_Num[i] = 0.0;
+		}
+
+		break;
+	}
+
+	return;
 }
 
 unsigned int GrayCode::Gray2Binary ( unsigned int g )
@@ -102,7 +130,6 @@ unsigned int GrayCode::Gray2Binary ( unsigned int g )
 
 	return ans;
 }
-
 unsigned int GrayCode::Binary2Gray ( unsigned int b )
 {
 	unsigned int ans = (b >> 31);
@@ -115,15 +142,18 @@ unsigned int GrayCode::Binary2Gray ( unsigned int b )
 	return ans;
 }
 
-void GrayCode::DispCode ( int hv_mode )
+void GrayCode::DispCode ( int hv_mode, int np_mode )
 {
 	std::cout << "Start:\tvoid GrayCode::DispCode ( int )" << std::endl;
-	// std::cout << "GBit = " << m_GBit << std::endl;
+	std::cout << "GBit = " << m_GBit << std::endl;
 
-	unsigned g, b, on;
+	unsigned int g, b, on;
+
+	if ( np_mode == POSITIVE) { m_NPMode = POSITIVE; }
+	else { m_NPMode = NEGATIVE; }
 
 	if ( hv_mode == HORI )	{ m_HVMode = HORI; }
-	else					{ m_HVMode = VERT; }
+	else	{ m_HVMode = VERT; }
 
 	glColor3f(0.0f, 0.0f, 0.0f);
 
@@ -138,7 +168,6 @@ void GrayCode::DispCode ( int hv_mode )
 
 	switch (m_DispMode)
 	{
-
 	case GrayCode::DISP_ILLUMI:
 	
 		glBegin(GL_POLYGON);
@@ -163,7 +192,7 @@ void GrayCode::DispCode ( int hv_mode )
 				g = Binary2Gray(b);
 				on = (g >> m_GBit) & 0x1;
 				
-				if (m_NPMode == GrayCode::NEGATIVE) { on = 1 - on; }
+				if (m_NPMode == NEGATIVE) { on = 1 - on; }
 				if (on) {
 					glBegin(GL_POLYGON);
 						glVertex3f(0.0f, i, 0.0f);
@@ -186,7 +215,7 @@ void GrayCode::DispCode ( int hv_mode )
 				g = Binary2Gray(b);
 				on = (g >> m_GBit) & 0x1;
 				
-				if (m_NPMode == GrayCode::NEGATIVE) { on = 1 - on; }
+				if (m_NPMode == NEGATIVE) { on = 1 - on; }
 				if (on) {
 					glBegin(GL_POLYGON);
 						glVertex3f(i, 0.0f, 0.0f);
@@ -203,5 +232,71 @@ void GrayCode::DispCode ( int hv_mode )
 		break;
 	}
 
-	// std::cout << "End:\tvoid GrayCode::DispCode ( int )" << std::endl;
+	std::cout << "End:\tvoid GrayCode::DispCode ( int )" << std::endl;
+}
+
+void GrayCode::Binarize ( unsigned char * color, int bin_mode )
+{
+	for ( int i = 0; i < m_CameraWidth * m_CameraHeight; ++i )
+	{
+		int val = (color[0] + color[1] + color[2]) / 3;	
+	
+		if ( bin_mode == DIFF_MODE ) {
+			val = val - (int)(m_Diff[i]);
+			
+			if (val < 0)	{ m_Diff[i] = 255; }
+			else { m_Diff[i] = 0; }
+		}
+		else {
+			m_Diff[i] = val;
+		}
+	
+		color += 3;
+	}
+
+	return;
+}
+
+// 
+// Get Spatial Code
+// 
+
+double GrayCode::dblCode ( int hv_mode, double cx, double cy )
+{
+	int ix, iy;
+	int c00, c01, c10, c11;
+
+	double fx, fy;
+	double c0, c1;
+
+	ix = (int)(cx);
+	iy = (int)(cy);
+
+	if ( ix == m_CameraWidth || iy == m_CameraHeight ) {
+		return 0.0f;
+		// return m_C2P[hv_mode][iy * m_CameraWidth + ix];
+	}
+
+	fx = cx - ix;
+	fy = cy - iy;
+
+	if ( m_bSlit )
+	{
+		c00 = m_C2P_DB[hv_mode][(iy) * m_CameraWidth + ix];
+		c01 = m_C2P_DB[hv_mode][(iy+1) * m_CameraWidth + ix];
+		c10 = m_C2P_DB[hv_mode][(iy) * m_CameraWidth + (ix+1)];
+		c11 = m_C2P_DB[hv_mode][(iy+1) * m_CameraWidth + (ix+1)];
+	}
+	else
+	{
+		c00 = m_C2P[hv_mode][iy * m_CameraWidth + ix];
+		c01 = m_C2P[hv_mode][(iy+1) * m_CameraWidth + ix];
+		c10 = m_C2P[hv_mode][iy * m_CameraWidth + (ix+1)];
+		c11 = m_C2P[hv_mode][(iy+1) * m_CameraWidth + (ix+1)];
+	}
+
+	c0 = c00 * (1-fy) + c01 * fy;
+	c1 = c10 * (1-fy) + c11 * fy;
+
+	return (c0 * (1-fx) + c1 * fx);
 }

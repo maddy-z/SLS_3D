@@ -13,9 +13,7 @@ BilateralFilter(double spatialSigma, double rangeSigma, int kernelSize, int appr
 	m_RangeSigma(rangeSigma),
 	m_KernelSize(kernelSize),
 	m_ApproxResolution(apprRes)
-
-{
-	
+{	
 	if (m_ApproxResolution <= 0)
 		m_ApproxResolution = 256;
 
@@ -68,7 +66,8 @@ BilateralFilter::
 // Bilateral Filtering
 // 
 
-bool BilateralFilter::Filter(const double * src, double * dest, int height, int width, int channel)
+bool 
+BilateralFilter::Filter(const double * src, double * dest, int height, int width, int channel)
 {
 	if (src == NULL || dest == NULL) {
 		return false;

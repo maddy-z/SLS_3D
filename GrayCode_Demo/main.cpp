@@ -57,6 +57,7 @@ unsigned int Gray2Binary(unsigned int g)
 // 
 
 bool IsHori = false;
+bool IsNegative = true;
 
 int projectorWidth = 1024;
 int projectorHeight = 1024;
@@ -65,12 +66,16 @@ int glutMainWndHandler = -1;
 
 GrayCode * gc = new GrayCode(640, 480, projectorWidth, projectorHeight, true, "123");
 
+int np_mode = GrayCode::POSITIVE;
+
 // 
 // Main Loop Display
 // 
 
 void Display(void)
 {
+	gc->m_DispMode = GrayCode::DISP_GRAYCODE;
+
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -83,12 +88,18 @@ void Display(void)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	if ( IsHori ) { gc->DispCode(GrayCode::HORI); }
-	else { gc->DispCode(GrayCode::VERT); }
+	if ( IsHori ) { gc->DispCode(GrayCode::HORI, np_mode); }
+	else { gc->DispCode(GrayCode::VERT, np_mode); }
 
-	if (gc->m_GBit > 0) { gc->m_GBit = (gc->m_GBit - 1); }
-	else { gc->m_GBit = gc->m_CodeDepth - 1; IsHori = !IsHori; }
+	if (np_mode == GrayCode::NEGATIVE) 
+	{
+		if (gc->m_GBit > 0) { gc->m_GBit = (gc->m_GBit - 1); }
+		else { gc->m_GBit = gc->m_CodeDepth - 1; IsHori = !IsHori; }
+	}
 
+	if ( np_mode == GrayCode::POSITIVE ) { np_mode = GrayCode::NEGATIVE; }
+	else { np_mode = GrayCode::POSITIVE; } 
+	
 	Sleep(800);
 
 	glutSwapBuffers();
@@ -119,8 +130,8 @@ int main(int argc, char ** argv)
 
 	std::cout << std::endl;
 	*/
-
-	gc ->InitDispCode(0);
+	gc->m_GBit = gc->m_CodeDepth - 1;
+	gc ->InitDispCode(1);
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);

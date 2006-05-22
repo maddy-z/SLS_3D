@@ -8,30 +8,29 @@
 class GrayCode
 
 {
+
 	friend void Display(void);
+	friend int main(int , char ** );
 
 private:
 	
-	int m_GBit;									// Current Bit Depth
+	int m_GBit;										// Current Bit Depth
 
-	int m_CodeDepth;							// Bit depth of gray code
-	int m_CodeResolution;					// Spatial resolution (pixel) of Gray Code
+	int m_CodeDepth;								// Bit depth of gray code
+	int m_CodeResolution;						// Spatial resolution (pixel) of Gray Code
 
-	int m_SlitWidth;								// Slit width of each projected white stripe
-	int m_SlitInterval;							// Spatial interval (pixel) of multi-slit
+	int m_SlitWidth;									// Slit width of each projected white stripe
+	int m_SlitInterval;								// Spatial interval (pixel) of multi-slit
 
-	unsigned char * m_Diff;					// Store binarized image derived from difference between nega / positive images
+	unsigned char * m_Diff;						// Store binarized image derived from difference between nega / positive images
 
-	// Camera Size
-	int m_CameraWidth;
+	int m_CameraWidth;							// Camera Size
 	int m_CameraHeight;
 
-	// Projector Size
-	int m_ProjectorWidth;
+	int m_ProjectorWidth;						// Projector Size
 	int m_ProjectorHeight;
 
-	// Buffers for multi-slit projection
-	double * m_Sum;
+	double * m_Sum;								// Buffers for multi-slit projection
 	double * m_Num;
 
 	// Directory Name
@@ -44,7 +43,7 @@ private:
 
 public:
 
-	int m_bSlit;						// flag ( True / False: With / Without multi-slit projection )
+	int m_bSlit;										// Flag ( True / False: With / Without multi-slit projection )
 
 	// C2P map ( double / int -> with / without multi-slit projection )
 	int * m_C2P[2];
@@ -72,6 +71,7 @@ public:
 	// "m_CurrSlitNum" - The slit is currently projected
 	int m_CurrSlitNum;
 
+	// 
 	// Program mode definition 
 	// 
 	// DISP_IDLE														-- no task 
@@ -79,6 +79,7 @@ public:
 	// DISP_SLIT														-- display multi-slit projection
 	// DISP_ILLUMI													-- display white image
 	// DISP_GRAYCODE											-- display gray code 
+	// 
 
 	enum 
 	{ 
@@ -138,6 +139,7 @@ public:
 	// 
 	
 	void InitDispCode ( int nProjSeq );
+	void InitDispCode ( int nProjSeq, int dispMode );
 
 	//
 	// Projection Image generation / Display projection image
@@ -155,7 +157,7 @@ public:
 	// - hv_mode: flag for horizontal / vertical pattern
 	// 
 
-	void DispCode ( int hv_mode );
+	void DispCode ( int hv_mode, int np_mode );
 
 	// ============================
 	// Process of captured images

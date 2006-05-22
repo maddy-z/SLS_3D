@@ -8,6 +8,7 @@
 #include	<OpenGL\Glut\glut.h>
 
 #include	"ARTagHelper.h"
+#include	"GrayCode.h"
 
 // ================
 // ARTagHelper
@@ -16,34 +17,29 @@
 ARTagHelper::ARTagHelper ( int cameraW, int cameraH, const char * fnConfig, const char * fnCornerPos ) :
 	m_MarkerNum(0)
 {
-	assert (fnConfig != NULL);
-	assert (fnCornerPos != NULL);
+	assert ( fnConfig != NULL );
+	assert ( fnCornerPos != NULL );
 
 	m_CameraWidth = cameraW;
 	m_CameraHeight = cameraH;
 
-	sprintf ( m_ConfigFile, "%s", fnConfig );
-	sprintf ( m_CornerPos, "%s", fnCornerPos );
+	// sprintf ( m_ConfigFile, "%s", fnConfig );
+	// sprintf ( m_CornerPos, "%s", fnCornerPos );
 
-	// 
 	// Read Marker Information
 	// Number of Markers / Positions of Marker Corners
-	// 
 
 	FILE * fp;
 	char str[256];
 
-	fp = fopen ( m_CornerPos, "r" );
+	fp = fopen ( fnCornerPos, "r" );
+	// fp = fopen ( m_CornerPos, "r" );
 
 	do { fgets ( str, 256, fp ); } while ( str[0] == '#' );
 	sscanf ( str, "%d", &m_MarkerNum );
 
 	assert (m_MarkerNum > 0);
 	m_MarkerID_LUT = new int[m_MarkerNum];
-
-	// m_MarkerCornerPos3d = new double(*)[3] [m_MarkerNum * 4 * 3 * sizeof(double)];
-	// m_MarkerCornerPosCam2d = new double(*)[2][m_MarkerNum * 4 * 2 * sizeof(double)];
-	// m_MarkerCornerPosPro2d = new (double(*)[2])[m_MarkerNum * 4 * 2 * sizeof(double)];
 
 	m_MarkerCornerPos3d = ( double(*)[3] )( malloc ( m_MarkerNum * 4 * 3 * sizeof ( double ) ) );
 	m_MarkerCornerPosCam2d = ( double(*)[2] )( malloc ( m_MarkerNum * 4 * 2 * sizeof ( double ) ) );
@@ -52,21 +48,20 @@ ARTagHelper::ARTagHelper ( int cameraW, int cameraH, const char * fnConfig, cons
 	m_ValidFlagCam = new bool[m_MarkerNum];
 	m_ValidFlagPro = new bool[m_MarkerNum];
 
-	for ( int i = 0; i < m_MarkerNum; i++ )
+	for ( int i = 0; i < m_MarkerNum; ++i )
 	{
 		m_ValidFlagCam[i] = false;
 		m_ValidFlagPro[i] = false;
 	}
 
-	for ( int id = 0; id < m_MarkerNum; id++ )
-	for ( int i = 0; i < 4; i++ )
+	for ( int id = 0; id < m_MarkerNum; ++id )
+	for ( int i = 0; i < 4; ++i )
 	{
 		int h = id * 4 + i;
-		do { fgets(str, 256, fp); } while (str[0]=='#' );
+		do { fgets(str, 256, fp); } while ( str[0] == '#' );
 		
 		sscanf ( str, "%lf %lf %lf", &m_MarkerCornerPos3d[h][0], &m_MarkerCornerPos3d[h][1], &m_MarkerCornerPos3d[h][2] );
 	}
-
 	fclose ( fp );
 
 	// 
@@ -75,17 +70,19 @@ ARTagHelper::ARTagHelper ( int cameraW, int cameraH, const char * fnConfig, cons
 
 	init_artag ( m_CameraWidth, m_CameraHeight, 3 );
 	
-	int res = load_array_file ( m_ConfigFile );
+	int res = load_array_file ( (char *)(fnConfig) );
+	// int res = load_array_file ( m_ConfigFile );
 	if ( res == -1 )
 	{
-		printf( "%c is not found\n", m_ConfigFile );
+		printf( "%c is not found\n", fnConfig );
+		// printf( "%c is not found\n", m_ConfigFile );
 		
 		system("pause");
 		exit(0);
 	}
 
 	char id[8];
-	for ( int i = 0; i < m_MarkerNum; i++ )
+	for ( int i = 0; i < m_MarkerNum; ++i )
 	{
 		sprintf( id, "%d", i );
 		m_MarkerID_LUT[i] = artag_associate_array( id );
@@ -93,7 +90,6 @@ ARTagHelper::ARTagHelper ( int cameraW, int cameraH, const char * fnConfig, cons
 
 	return;
 }
-
 ARTagHelper::~ARTagHelper()
 {
 	if (m_MarkerID_LUT) { delete [] m_MarkerID_LUT; }
@@ -114,21 +110,20 @@ ARTagHelper::~ARTagHelper()
 
 void ARTagHelper::FindMarkerCorners( unsigned char * image )
 {
-	std::cout << "Start:\tvoid ARTagHelper::FindMarkerCorners( unsigned char * )" << std::endl;
-	std::cout << "Marker Number = " << m_MarkerNum << std::endl;
+	std::cout << "Start:\tvoid ARTagHelper::FindMarkerCorners ( unsigned char * )" << std::endl;
+	// std::cout << "Marker Number = " << m_MarkerNum << std::endl;
 
 	artag_find_objects ( image, 1 );
 	int nFound = 0;
-	for ( int i = 0; i < m_MarkerNum; i++ )
+	
+	for ( int i = 0; i < m_MarkerNum; ++i )
 	{
 		if ( artag_is_object_found( m_MarkerID_LUT[i] ) )
 		{
 			m_ValidFlagCam[i] = true;
-			 nFound++;
-			// 
-			// All the corners of the marker should be visible from the camera.
-			// 
+			nFound++;
 			
+			// All the corners of the marker should be visible from the camera.
 			for ( int j = 0; j < 4; j++ )
 			{
 				float camX, camY;
@@ -140,50 +135,46 @@ void ARTagHelper::FindMarkerCorners( unsigned char * image )
 				m_MarkerCornerPosCam2d[i*4+j][0] = camX;
 				m_MarkerCornerPosCam2d[i*4+j][1] = camY;
 				
-				if ( camX < 0.0 || camX >= m_CameraWidth || camY < 0.0 || camY >= m_CameraHeight ){
+				if ( camX < 0.0 || camX >= m_CameraWidth || camY < 0.0 || camY >= m_CameraHeight ) {
 					m_ValidFlagCam[i] = false;
 				}
 			}
 		}
 	}
 
-	std::cout << "Mard Found " << nFound << std::endl;
+	// std::cout << "Mark Found " << nFound << std::endl;
 	std::cout << "End:\tvoid ARTagHelper::FindMarkerCorners( unsigned char * )" << std::endl;
 
 	return;
 }
 
-//void ARTagHelper::GetMarkerCornerPos2dInProjector ( CGrayCode * gc )
-//{
-//	for ( int i = 0; i < m_MarkerNum; i++ )
-//	{
-//		m_ValidFlagPro[i] = true;
-//
-//		for ( int j = 0; j < 4; j++ )
-//		{
-//			double x = m_MarkerCornerPosCam2d[i*4+j][0];
-//			double y = m_MarkerCornerPosCam2d[i*4+j][1];
-//
-//			if ( gc->dblCode(gc->VERT,x,y) != 0.0 && 
-//				 gc->dblCode(gc->HORI,x,y) != 0.0 &&
-//				 gc->_mask[(int)(x)+(int)(y) * m_CameraWidth] )
-//			{
-//				// gray code can be obtained at the markers
-//				m_MarkerCornerPosPro2d[i*4+j][0] = gc->dblCode(gc->VERT, x, y);
-//				m_MarkerCornerPosPro2d[i*4+j][1] = gc->dblCode(gc->HORI, x, y);
-//			}
-//			else
-//			{
-//				m_ValidFlagPro[i] = false;
-//			}
-//		}
-//
-//	}
-//}
+void ARTagHelper::GetMarkerCornerPos2dInProjector ( GrayCode * gc )
+{
+	for ( int i = 0; i < m_MarkerNum; ++i )
+	{
+		m_ValidFlagPro[i] = true;
+
+		for ( int j = 0; j < 4; ++j )
+		{
+			double x = m_MarkerCornerPosCam2d[i*4+j][0];
+			double y = m_MarkerCornerPosCam2d[i*4+j][1];
+
+			if ( gc->dblCode(gc->VERT, x, y) != 0.0 && 
+				 gc->dblCode(gc->HORI, x, y) != 0.0 &&
+				 gc->m_Mask[(int)(x) + (int)(y) * m_CameraWidth] )
+			{
+				// Gray Code can be obtained at the markers.
+				m_MarkerCornerPosPro2d[i*4+j][0] = gc->dblCode(gc->VERT, x, y);
+				m_MarkerCornerPosPro2d[i*4+j][1] = gc->dblCode(gc->HORI, x, y);
+			}
+			else { m_ValidFlagPro[i] = false; }
+		}
+	}
+}
 
 void ARTagHelper::DrawMarkersInCameraImage ( float pixZoomX, float pixZoomY )
 {
-	for ( int i = 0; i < m_MarkerNum; i++ )
+	for ( int i = 0; i < m_MarkerNum; ++i )
 	{
 		if ( m_ValidFlagCam[i] )
 		{
@@ -199,4 +190,17 @@ void ARTagHelper::DrawMarkersInCameraImage ( float pixZoomX, float pixZoomY )
 	}
 
 	return;
+}
+
+void 
+ARTagHelper::GetValidFlagArray(int deviceType, const bool *& validArray, int & markerNum) const 
+{
+	markerNum = m_MarkerNum;
+		
+	if ( deviceType == CAMERA ) { 
+		validArray = m_ValidFlagCam; 
+	}
+	else if ( deviceType == PROJECTOR ) { 
+		validArray = m_ValidFlagPro; 
+	}
 }
