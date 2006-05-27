@@ -65,7 +65,9 @@ private:
 	// 
 	
 	SlsMainWnd(int glutWndHandler = -1);										
+
 	inline void setSlsMode(SlsMainWnd::SLS_MODE m) { m_SlsStatusMode = m; }
+	inline void setSlsModeIdle() { m_SlsStatusMode = SlsMainWnd::SLS_IDLE; }
 	
 	static std::auto_ptr<SlsMainWnd> s_Instance;
 

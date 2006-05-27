@@ -7,6 +7,7 @@
 
 #include <OpenGL\Glui\glui.h>
 #include <OpenGL\Glut\glut.h>
+#include <OpenCV_2.3.1\opencv2\opencv.hpp>
 
 #include "GrayCode.h"
 
@@ -14,7 +15,7 @@
 // Constructor & Destructor
 // =====================
 
-GrayCode::GrayCode ( int cameraW, int cameraH, int projectorW, int projectorH, bool bSlit, char * dirname )
+GrayCode::GrayCode ( int cameraW, int cameraH, int projectorW, int projectorH, bool bSlit, const char * dirname )
 {
 	// Code covers 1024 ( = 2 ^ m_CodeDepth ) pixels.
 	// This should be greater than projector resolution.
@@ -46,7 +47,7 @@ GrayCode::GrayCode ( int cameraW, int cameraH, int projectorW, int projectorH, b
 	
 	for ( int i = 0; i < 2; ++i )
 	{
-		m_C2P[i] = new int[m_CameraWidth * m_CameraHeight];
+		m_C2P[i] = new unsigned int[m_CameraWidth * m_CameraHeight];
 		m_C2P_UC[i] = new unsigned char[m_CameraWidth * m_CameraHeight];
 		m_C2P_DB[i] = new double[m_CameraWidth * m_CameraHeight];
 	}
@@ -81,9 +82,22 @@ GrayCode::~GrayCode()
 	delete [] m_Compensate;
 }
 
-void GrayCode::InitDispCode ( int nProjSeq, int dispMode )
+void GrayCode::InitDispCode ( int nProjSeq, int dispMode, int hvMode )
 {
-	m_ProjSeqNum = dispMode;
+	switch (dispMode)
+	{
+	case DISP_IDLE:					m_DispMode = DISP_IDLE;				break;
+	case DISP_GRAYCODE:		m_DispMode = DISP_GRAYCODE;	break;
+	case DISP_SLIT:					m_DispMode = DISP_SLIT;				break;
+	case DISP_ILLUMI:				m_DispMode = DISP_ILLUMI;			break;
+	}
+
+	switch (hvMode)
+	{
+	case HORI:							m_HVMode = HORI;						break;
+	case VERT:							m_HVMode = VERT;						break;
+	}
+
 	InitDispCode(nProjSeq);
 }
 void GrayCode::InitDispCode ( int nProjSeq )
@@ -95,6 +109,7 @@ void GrayCode::InitDispCode ( int nProjSeq )
 	{
 
 	case DISP_GRAYCODE:
+		
 		m_GBit = m_CodeDepth - 1;
 
 		for ( int i = 0; i < m_CameraWidth * m_CameraHeight; ++i ) {
@@ -104,6 +119,7 @@ void GrayCode::InitDispCode ( int nProjSeq )
 		break;
 
 	case DISP_SLIT:
+		
 		m_CurrSlitNum = 0;
 
 		for ( int i = 0; i < m_CameraWidth * m_CameraHeight; ++i )
@@ -115,8 +131,15 @@ void GrayCode::InitDispCode ( int nProjSeq )
 
 		break;
 	}
+}
 
-	return;
+void GrayCode::EncodeGray2Binary()
+{
+	if (m_DispMode != GrayCode::DISP_GRAYCODE) { return; }
+
+	for ( int i = 0; i < m_CameraHeight * m_CameraWidth; ++i ) {
+		m_C2P[m_HVMode][i] = Gray2Binary(m_C2P[m_HVMode][i]);
+	}
 }
 
 unsigned int GrayCode::Gray2Binary ( unsigned int g )
@@ -142,18 +165,31 @@ unsigned int GrayCode::Binary2Gray ( unsigned int b )
 	return ans;
 }
 
-void GrayCode::DispCode ( int hv_mode, int np_mode )
+void GrayCode::DispCode ()
+{
+	DispCode ( m_HVMode );
+}
+void GrayCode::DispCode ( int hv_mode )
 {
 	std::cout << "Start:\tvoid GrayCode::DispCode ( int )" << std::endl;
 	std::cout << "GBit = " << m_GBit << std::endl;
 
 	unsigned int g, b, on;
 
-	if ( np_mode == POSITIVE) { m_NPMode = POSITIVE; }
-	else { m_NPMode = NEGATIVE; }
-
 	if ( hv_mode == HORI )	{ m_HVMode = HORI; }
-	else	{ m_HVMode = VERT; }
+	else { m_HVMode = VERT; }
+
+	switch ( m_NPMode )
+	{
+	case POSITIVE:		std::cout << "NPMode = POSITIVE"	<< std::endl;			break;
+	case NEGATIVE:		std::cout << "NPMode = NEGATIVE"	<< std::endl;			break;
+	}
+
+	switch ( m_HVMode )
+	{
+	case HORI:				std::cout << "HVMode = HORIZONTAL" << std::endl;		break;
+	case VERT:				std::cout << "HVMode = VERTICAL"		<< std::endl;		break;
+	}
 
 	glColor3f(0.0f, 0.0f, 0.0f);
 
@@ -166,16 +202,20 @@ void GrayCode::DispCode ( int hv_mode, int np_mode )
 	
 	glColor3f(1.0f, 1.0f, 1.0f);
 
-	switch (m_DispMode)
+	switch (m_DispMode)	
 	{
-	case GrayCode::DISP_ILLUMI:
 	
-		glBegin(GL_POLYGON);
-			glVertex3f(0.0f, 0.0f, 0.0f);
-			glVertex3f(m_ProjectorWidth, 0.0f, 0.0f);
-			glVertex3f(m_ProjectorWidth, m_ProjectorHeight, 0.0f);
-			glVertex3f(0.0f, m_ProjectorHeight, 0.0f);
-		glEnd();
+	case GrayCode::DISP_ILLUMI:
+		
+		if ( m_NPMode == POSITIVE ) 
+		{
+			glBegin(GL_POLYGON);
+				glVertex3f(0.0f, 0.0f, 0.0f);
+				glVertex3f(m_ProjectorWidth, 0.0f, 0.0f);
+				glVertex3f(m_ProjectorWidth, m_ProjectorHeight, 0.0f);
+				glVertex3f(0.0f, m_ProjectorHeight, 0.0f);
+			glEnd();
+		}
 
 		break;
 
@@ -195,10 +235,16 @@ void GrayCode::DispCode ( int hv_mode, int np_mode )
 				if (m_NPMode == NEGATIVE) { on = 1 - on; }
 				if (on) {
 					glBegin(GL_POLYGON);
+						/*
 						glVertex3f(0.0f, i, 0.0f);
 						glVertex3f(m_ProjectorWidth, i, 0.0f);
 						glVertex3f(m_ProjectorWidth, i + m_CodeResolution, 0.0f);
 						glVertex3f(0.0f, i + m_CodeResolution, 0.0f);
+						*/
+						glVertex3f(0.0f, m_ProjectorHeight - i, 0.0f);
+						glVertex3f(m_ProjectorWidth, m_ProjectorHeight - i, 0.0f);
+						glVertex3f(m_ProjectorWidth, m_ProjectorHeight - (i + m_CodeResolution), 0.0f);
+						glVertex3f(0.0f, m_ProjectorHeight - (i + m_CodeResolution), 0.0f);
 					glEnd();
 				}
 			}
@@ -206,8 +252,6 @@ void GrayCode::DispCode ( int hv_mode, int np_mode )
 			break;
 
 		case GrayCode::VERT:
-
-			// std::cout << "GrayCode Display: Vertical" << std::endl;
 
 			for (int i = 0; i < m_ProjectorWidth; i += m_CodeResolution) 
 			{
@@ -230,31 +274,194 @@ void GrayCode::DispCode ( int hv_mode, int np_mode )
 		}
 
 		break;
+
+	case GrayCode::DISP_SLIT:
+
+		switch (m_HVMode)
+		{
+
+		case GrayCode::HORI:
+
+			for ( int i = m_CurrSlitNum; i < m_ProjectorHeight; i += m_SlitInterval )
+			{
+				glBegin(GL_POLYGON);
+					glVertex3f(0.0f, i, 0.0f);
+					glVertex3f(m_ProjectorWidth, i, 0.0f);
+					glVertex3f(m_ProjectorWidth, i+m_SlitWidth, 0.0f);
+					glVertex3f(0.0f, i+m_SlitWidth, 0.0f);
+				glEnd();
+			}
+
+			break;
+		
+		case GrayCode::VERT:
+			
+			for ( int i = m_CurrSlitNum; i < m_ProjectorWidth; i += m_SlitInterval )
+			{
+				glBegin(GL_POLYGON);
+					glVertex3f(i, 0.0f, 0.0f);
+					glVertex3f(i+m_SlitWidth, 0.0f, 0.0f);
+					glVertex3f(i+m_SlitWidth, m_ProjectorHeight, 0.0f);
+					glVertex3f(i, m_ProjectorHeight, 0.0f);
+				glEnd();
+			}
+
+			break;
+		}
+
+		break;
+	
 	}
 
 	std::cout << "End:\tvoid GrayCode::DispCode ( int )" << std::endl;
 }
-
-void GrayCode::Binarize ( unsigned char * color, int bin_mode )
+void GrayCode::DispCode ( int hv_mode, int np_mode )
 {
-	for ( int i = 0; i < m_CameraWidth * m_CameraHeight; ++i )
+	if ( np_mode == POSITIVE ) { m_NPMode = POSITIVE; }
+	else { m_NPMode = NEGATIVE; }
+
+	DispCode ( hv_mode );
+}
+
+void GrayCode::Binarize ( const unsigned char * color, int bin_mode )
+{
+	for ( int i = 0; i < m_CameraWidth * m_CameraHeight; ++i, color += 3 )
 	{
 		int val = (color[0] + color[1] + color[2]) / 3;	
 	
 		if ( bin_mode == DIFF_MODE ) {
 			val = val - (int)(m_Diff[i]);
 			
-			if (val < 0)	{ m_Diff[i] = 255; }
+			if ( val < 0 ) { m_Diff[i] = 255; }
 			else { m_Diff[i] = 0; }
 		}
 		else {
 			m_Diff[i] = val;
 		}
-	
-		color += 3;
 	}
 
 	return;
+}
+
+void GrayCode::CaptureCode ( const unsigned char * image )
+{
+	CaptureCode ( image, m_DispMode, m_HVMode, m_GBit );
+}
+void GrayCode::CaptureCode ( const unsigned char * image, int dispMode, int hvMode, unsigned int nthFrame ) 
+{
+	if ( image == NULL ) { return; }
+
+	if ( dispMode == GrayCode::DISP_GRAYCODE )
+	{
+		if ( m_NPMode == POSITIVE ) {
+			Binarize(image, GrayCode::AVG_MODE);
+		}
+		else if ( m_NPMode == NEGATIVE ) {
+			Binarize(image, GrayCode::DIFF_MODE);
+			
+			for ( int i = 0; i < m_CameraHeight * m_CameraWidth; ++i ) {
+				// if ( m_Diff[i] ) { m_C2P[m_HVMode][i] |= (1 << m_GBit); }
+				if ( m_Diff[i] ) { m_C2P[hvMode][i] |= (1 << nthFrame); }
+			}
+		}
+	}
+	else if ( dispMode == GrayCode::DISP_ILLUMI )
+	{
+		const unsigned char * srcDataPtr = NULL;
+		char fileName[256];
+
+		if ( m_NPMode == POSITIVE ) 
+		{
+			memcpy ( m_White, image, m_CameraWidth * m_CameraHeight * 3 );
+			sprintf ( fileName, "%s/White_%d.bmp", m_DirName, m_ProjSeqNum );
+			
+			srcDataPtr = m_White;
+		}
+		else if ( m_NPMode == NEGATIVE ) 
+		{
+			memcpy ( m_Black, image, m_CameraWidth * m_CameraHeight * 3 );
+			sprintf ( fileName, "%s/Black_%d.bmp", m_DirName, m_ProjSeqNum );
+
+			srcDataPtr = m_Black;
+		}
+		else { 
+			return; 
+		}
+		
+		cv::Mat saveDest(m_CameraHeight, m_CameraWidth, CV_8UC3);
+		unsigned char * saveDestRowStart = saveDest.data;
+		unsigned char * saveDestDataPtr = NULL;
+
+		for ( int i = 0; i < m_CameraHeight; ++i, saveDestRowStart += saveDest.step ) 
+		{
+			saveDestDataPtr = saveDestRowStart;
+
+			for ( int j = 0; j < m_CameraWidth; ++j, saveDestDataPtr += 3, srcDataPtr += 3 )
+			{
+				saveDestDataPtr[0] = srcDataPtr[0];
+				saveDestDataPtr[1] = srcDataPtr[1];
+				saveDestDataPtr[2] = srcDataPtr[2];
+			}
+		}
+			
+		cv::imwrite(fileName, saveDest);
+	}
+	else if ( dispMode == GrayCode::DISP_SLIT )
+	{
+		// TODO:
+	}
+	else {
+		printf("Invalid Disp Mode\n");
+		return;
+	}
+}
+
+bool GrayCode::GetNextFrame () 
+{
+	switch ( m_DispMode ) 
+	
+	{
+	
+	case DISP_GRAYCODE:
+		
+		switch ( m_NPMode )
+		{
+		case POSITIVE:	
+			m_NPMode = NEGATIVE; 
+			break;
+
+		case NEGATIVE:
+			m_NPMode = POSITIVE;
+			--m_GBit;
+			if ( m_GBit < 0 ) {
+				m_GBit = m_CodeDepth - 1;
+				// m_DispMode = GrayCode::DISP_IDLE;
+				
+				return false;		
+			}
+
+			break;
+		}
+
+		break;
+
+	case DISP_ILLUMI:
+		
+		switch ( m_NPMode )
+		{
+		case POSITIVE:		m_NPMode = NEGATIVE;	break;
+		case NEGATIVE:		m_NPMode = POSITIVE;		return false;
+		}
+		
+		break;
+
+	case DISP_SLIT:
+		// TODO:
+		return false;
+		break;
+	}
+
+	return true;
 }
 
 // 
@@ -299,4 +506,43 @@ double GrayCode::dblCode ( int hv_mode, double cx, double cy )
 	c1 = c10 * (1-fy) + c11 * fy;
 
 	return (c0 * (1-fx) + c1 * fx);
+}
+
+void GrayCode::Mask ( int threshold )
+{
+	for ( int i = 0; i < m_CameraWidth * m_CameraHeight; ++i )
+	{
+		int avgWhite = ( m_White[i*3+0] + m_White[i*3+1] + m_White[i*3+2] ) / 3;
+		int avgBlack = ( m_Black[i*3+0] + m_Black[i*3+1] + m_Black[i*3+2] ) / 3;
+		
+		if ( abs( avgWhite - avgBlack ) > threshold ) { m_Mask[i] = true; }
+		else { m_Mask[i] = false; }
+	}
+}
+
+int GrayCode::ShowProjectorIlluminace()
+{
+	cv::Mat pIllumi ( m_ProjectorHeight, m_ProjectorWidth, CV_8UC3 );
+	
+	unsigned char * pDestRowStart = pIllumi.data;
+	unsigned int srcP = 0;
+
+	for ( int i = 0; i < m_CameraHeight * m_CameraWidth; ++i ) 
+	{
+		int pX = m_C2P[VERT][i];
+		int pY = m_ProjectorHeight - m_C2P[HORI][i];
+			
+		pDestRowStart[pY * pIllumi.step + pX * 3]			= 255;
+		pDestRowStart[pY * pIllumi.step + pX * 3 + 1]		= 255;
+		pDestRowStart[pY * pIllumi.step + pX * 3 + 2]		= 255;
+			
+		// ilP->imageData[(pY*_projectorW+pX)*3]		=255;
+		// ilP->imageData[(pY*_projectorW+pX)*3+1]	=255;
+		// ilP->imageData[(pY*_projectorW+pX)*3+2]	=255;
+	}
+
+	cv::namedWindow("Showing Projector Illumniation", CV_WINDOW_AUTOSIZE);
+	cv::imshow("Showing Projector Illumniation", pIllumi);
+
+	return 0;
 }

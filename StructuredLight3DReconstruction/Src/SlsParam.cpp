@@ -196,6 +196,11 @@ bool SlsParam::LoadFromXmlFile(const char * filename)
 					sprintf(m_CameraTransFile, "%s/%s", m_CameraDir, strBuf);
 					sprintf(m_ProjectorTransFile, "%s/%s", m_ProjectorDir, strBuf);
 				}
+				if (strcmp(subChildNode->Value(), "Extr") == 0) { 
+					strBuf = subChildNode->ToElement()->Attribute("name");
+					sprintf(m_CameraExtrFile, "%s/%s", m_CameraDir, strBuf);
+					sprintf(m_ProjectorExtrFile, "%s/%s", m_ProjectorDir, strBuf);
+				}
 				if (strcmp(subChildNode->Value(), "ARTag") == 0) { 
 					strBuf = subChildNode->ToElement()->Attribute("pos");
 					sprintf(m_ARTagPosFile, "%s/%s", m_ARTagDir, strBuf);
@@ -257,6 +262,12 @@ const char * SlsParam::GetTransFilePath(int device) const
 {
 	if ( device == CAMERA ) { return m_CameraTransFile; }
 	else if ( device == PROJECTOR ) { return m_ProjectorTransFile; }
+	else { return NULL; }
+}
+const char * SlsParam::GetExtrFilePath(int device) const
+{
+	if ( device == CAMERA ) { return m_CameraExtrFile; }
+	else if ( device == PROJECTOR ) { return m_ProjectorExtrFile; }
 	else { return NULL; }
 }
 

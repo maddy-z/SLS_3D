@@ -22,6 +22,7 @@ public:
 	{
 		INTR, 
 		DIST, 
+		EXTR,
 	};
 
 	/*
@@ -32,36 +33,30 @@ public:
 	*/
 
 	ExtrCalibrator (	int MarkerNum );
-	/*
 	ExtrCalibrator (	int MarkerNum, 
 							const char * fnCamIntr, 
 							const char * fnCamDist, 
-							const char * fnCamRot, 
-							const char * fnCamTrans, 
 							const char * fnProIntr, 
-							const char * fnProDist, 
-							const char * fnProRot, 
-							const char * fnProTrans );
-							*/
+							const char * fnProDist );
 	
 	virtual ~ExtrCalibrator();
 
 	/*
 	*	Read parameters from external files
 	*
-	*	- Intrinsic_File & Distortion_File: file name
-	*	- Type: identifier ( Projector or Camera )
+	*	- Intrinsic File & Distortion File:		File Name
+	*	- Type:											Identifier ( Projector or Camera )
 	*/
 
 	// bool ReadIntrParaFile( void );							
-	bool ReadIntrParaFile( const char * camIntrFile, const char * camDistFile, const char * proIntrFile, const char * proDistFile );
+	bool ReadIntrParaFile ( const char * camIntrFile, const char * camDistFile, const char * proIntrFile, const char * proDistFile );
 	// bool ReadIntrParaFileSub( int type );
-	bool ReadIntrParaFileSub( int type, const char * intrFile, const char * distFile);
+	bool ReadIntrParaFileSub ( int type, const char * intrFile, const char * distFile );
 
 	// bool ReadExtrParaFile( void );							
-	bool ReadExtrParaFile( const char * camRotFile, const char * camTransFile, const char * proRotFile, const char * proTransFile );
+	bool ReadExtrParaFile ( const char * camRotFile, const char * camTransFile, const char * proRotFile, const char * proTransFile );
 	// bool ReadExtrParaFileSub( int type );
-	bool ReadExtrParaFileSub( int type, const char * rotFile, const char * transFile);
+	bool ReadExtrParaFileSub ( int type, const char * rotFile, const char * transFile );
 
 	/*
 	*	Extrinsic Calibration
@@ -75,15 +70,16 @@ public:
 	*
 	*/
 
-	void ExtrCalib( int type, double (* markerPos2d)[2], double (* markerPos3d)[3], bool * valid_flag );
+	void ExtrCalib ( int type, double (* markerPos2d)[2], double (* markerPos3d)[3], bool * valid_flag );
 
 	/*
 	*	Save / Print cv::Mat Matrix
 	*/ 
 
-	const cv::Mat & GetMatrix(int deviceType, int matType);
-	void PrintMatrix( const cv::Mat & matrix );
-	void SaveMatrix( const cv::Mat & matrix, const char * fname );
+	const cv::Mat & GetMatrix ( int deviceType, int matType );
+	void PrintMatrix ( const cv::Mat & matrix );
+	void SaveMatrix ( const cv::Mat & mat, const char * fname);
+	void SaveMatrix ( int deviceType, int matType, const char * fname );
 
 private:
 
@@ -102,12 +98,12 @@ private:
 	// File Name of Parameters
 	// char m_FnCamIntr[128];
 	// char m_FnCamDist[128];
-	char m_FnCamRot[128];
-	char m_FnCamTrans[128];
+	// char m_FnCamRot[128];
+	// char m_FnCamTrans[128];
 	// char m_FnProIntr[128];
 	// char m_FnProDist[128];
-	char m_FnProRot[128];
-	char m_FnProTrans[128];
+	// char m_FnProRot[128];
+	// char m_FnProTrans[128];
 
 	char m_FnProExtrPos[128];
 	char m_FnCamExtrPos[128];

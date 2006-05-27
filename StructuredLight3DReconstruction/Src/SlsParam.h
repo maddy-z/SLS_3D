@@ -65,10 +65,13 @@ public:
 	const char * GetARTagConfigFilePath() const { return m_ARTagConfigFile; }
 	const char * GetARTagPosFilePath() const { return m_ARTagPosFile; }
 
-	const char * GetIntrFilePath(int device) const;
-	const char * GetDistortionFilePath(int device) const;
-	const char * GetRotFilePath(int device) const;
-	const char * GetTransFilePath(int device) const;
+	const char * GetIntrFilePath ( int device ) const;
+	const char * GetDistortionFilePath ( int device ) const;
+	const char * GetRotFilePath ( int device ) const;
+	const char * GetTransFilePath ( int device ) const;
+	const char * GetExtrFilePath ( int device ) const;
+
+	const char * GetGrayCodeDir() const { return m_GrayCodeDir; }
 
 	// std::string GetARTagConfigFilePath() const { return std::string(m_ARTagConfigFile); }
 	// std::string GetARTagPosFilePath() const { return std::string(m_ARTagPosFile); }
@@ -158,6 +161,7 @@ private:
 	char m_CameraDistFile[128];
 	char m_CameraRotFile[128];
 	char m_CameraTransFile[128];
+	char m_CameraExtrFile[128];
 
 	/*
 	*	File-Name for Projector parameters ( In OpenCV format )
@@ -172,9 +176,7 @@ private:
 	char m_ProjectorDistFile[128];
 	char m_ProjectorRotFile[128];
 	char m_ProjectorTransFile[128];
-
-	// char m_CameraDir[128];
-	// char m_ProjectorDir[128];
+	char m_ProjectorExtrFile[128];
 	
 	/*
 	* File-Name for Projector intermediate data ( In list format )
@@ -190,11 +192,6 @@ private:
 	
 	/*
 	char m_IntermediateDir[128];
-	
-	char m_IntrFile[128];
-	char m_DistFile[128];
-	char m_RotFile[128];
-	char m_TransFile[128];
 
 	char m_ExtrposFile[128];
 	char m_IntrposFile[128];

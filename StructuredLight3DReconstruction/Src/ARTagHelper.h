@@ -9,6 +9,7 @@
 // 
 
 class GrayCode;
+class ExtrCalibrator;
 
 // 
 // Class -- ARTagHelper
@@ -16,6 +17,7 @@ class GrayCode;
 
 class ARTagHelper
 {
+	friend void Display(void);
 
 private:
 	
@@ -55,13 +57,17 @@ public:
 	// Constructor & Destructor
 	// =========================
 	
-	ARTagHelper( int cameraW, int cameraH, const char * fnConfig, const char * fnCornerPos );
+	ARTagHelper ( int cameraW, int cameraH, const char * fnConfig, const char * fnCornerPos );
 	virtual ~ARTagHelper();
 
 	void FindMarkerCorners ( unsigned char * image );
 	void GetMarkerCornerPos2dInProjector ( GrayCode * gc );
 	void DrawMarkersInCameraImage ( float pixZoomX, float pixZoomY );
 
+	void PrintMarkerCornersPos2dInCam () const;
+	void PrintMarkerCornersPos2dInProjector() const;
+	void PrintMarkerCornersPos3d() const;
+	
 	// 
 	// Getters
 	// 

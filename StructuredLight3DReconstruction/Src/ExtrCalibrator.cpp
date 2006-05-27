@@ -24,28 +24,15 @@ ExtrCalibrator ( int	MarkerNum )
 	m_ProExtr.create (3, 4, CV_64F);
 }
 
-/*
 ExtrCalibrator::
 ExtrCalibrator ( int	MarkerNum, 
 						const char * fnCamIntr, 
 						const char * fnCamDist, 
-						const char * fnCamRot, 
-						const char * fnCamTrans, 
 						const char * fnProIntr, 
-						const char * fnProDist, 
-						const char * fnProRot, 
-						const char * fnProTrans )
+						const char * fnProDist )
 {
+	
 	m_MarkerNum = MarkerNum;
-
-	sprintf ( m_FnCamIntr, "%s", fnCamIntr );
-	sprintf ( m_FnCamDist, "%s", fnCamDist );
-	sprintf ( m_FnCamRot, "%s", fnCamRot );
-	sprintf ( m_FnCamTrans, "%s", fnCamTrans );
-	sprintf ( m_FnProIntr, "%s", fnProIntr );
-	sprintf ( m_FnProDist, "%s", fnProDist );
-	sprintf ( m_FnProRot, "%s", fnProRot );
-	sprintf ( m_FnProTrans, "%s", fnProTrans );
 
 	m_CamIntr.create (3, 3, CV_64F);
 	m_CamDist.create (4, 1, CV_64F);
@@ -57,8 +44,10 @@ ExtrCalibrator ( int	MarkerNum,
 	m_ProRot.create (3, 1, CV_64F);
 	m_ProTrans.create (3, 1, CV_64F);
 	m_ProExtr.create (3, 4, CV_64F);
+
+	ReadIntrParaFile ( fnCamIntr, fnCamDist, fnProIntr, fnProDist );
+
 }
-*/
 
 ExtrCalibrator::
 ~ExtrCalibrator() 
@@ -157,7 +146,10 @@ ExtrCalibrator::ReadIntrParaFileSub ( int type, const char * intrFile, const cha
 	FILE * fp;																// Read parameter
 	double para;
 
+	// 
 	// Intrinsic parameter 
+	// 
+
 	if ( ( fp = fopen ( intrFile, "r" ) ) == NULL ) { 
 		return false; 
 	}
@@ -169,7 +161,10 @@ ExtrCalibrator::ReadIntrParaFileSub ( int type, const char * intrFile, const cha
 	}
 	fclose( fp );
 
+	// 
 	// Distortion parameter
+	// 
+
 	if ( ( fp = fopen ( distFile, "r" ) ) == NULL )	{
 		return false;
 	}
@@ -341,9 +336,11 @@ ExtrCalibrator::ReadExtrParaFileSub ( int type, const char * rotFile, const char
 void 
 ExtrCalibrator::ExtrCalib ( int type, double (* markerPos2d)[2], double (* markerPos3d)[3], bool * valid_flag )
 {
-	// Set Pointers of Camera / Projector parameters
+	// 
+	// Set Pointers of Camera / Projector Parameters
 	// Copy File Name
-	
+	// 
+
 	cv::Mat intrinsic;
 	cv::Mat distortion;
 	cv::Mat rotation;
@@ -360,9 +357,6 @@ ExtrCalibrator::ExtrCalib ( int type, double (* markerPos2d)[2], double (* marke
 		rotation = m_CamRot;
 		translation = m_CamTrans;
 		extrinsic = m_CamExtr;
-
-		sprintf ( dst_file_rot, "%s", m_FnCamRot );
-		sprintf ( dst_file_trans, "%s", m_FnCamTrans );
 	}
 	else {
 		intrinsic = m_ProIntr;
@@ -370,9 +364,6 @@ ExtrCalibrator::ExtrCalib ( int type, double (* markerPos2d)[2], double (* marke
 		rotation = m_ProRot;
 		translation = m_ProTrans;
 		extrinsic = m_ProExtr;
-
-		sprintf ( dst_file_rot, "%s", m_FnProRot );
-		sprintf ( dst_file_trans, "%s", m_FnProTrans );
 	}
 
 	// 
@@ -380,15 +371,17 @@ ExtrCalibrator::ExtrCalib ( int type, double (* markerPos2d)[2], double (* marke
 	// 
 
 	int ValidMarkerNum = 0;
-	for ( int i = 0; i < m_MarkerNum; ++i ) 
-	{
-		if ( valid_flag[i] ) {
-			++ValidMarkerNum;
-		}
+	for ( int i = 0; i < m_MarkerNum; ++i ) {
+		if ( valid_flag[i] ) { ++ValidMarkerNum; }
 	}
 
-	cv::Mat pos3d ( ValidMarkerNum * 4, 3, CV_64F );
-	cv::Mat pos2d ( ValidMarkerNum * 4, 2, CV_64F );
+	if ( ValidMarkerNum == 0 ) {
+		std::cout << "Valid Marker Number = " << ValidMarkerNum << std::endl;
+		return;
+	}
+
+	cv::Mat pos3d ( ValidMarkerNum * 4, 3, CV_64FC1 );
+	cv::Mat pos2d ( ValidMarkerNum * 4, 2, CV_64FC1 );
 
 	int j = 0;
 	
@@ -410,10 +403,12 @@ ExtrCalibrator::ExtrCalib ( int type, double (* markerPos2d)[2], double (* marke
 
 	// Extrinsic Parameter Calibration using an OpenCV Function
 	cv::solvePnP(pos3d, pos2d, intrinsic, distortion, rotation, translation);
-	// cvFindExtrinsicCameraParams2 ( pos3d, pos2d, intrinsic, distortion, rotation, translation );
 
+	// 
 	// Extrinsic = Rotation | Translation
-	cv::Mat rotation33(3, 3, CV_64F);
+	// 
+
+	cv::Mat rotation33(3, 3, CV_64FC1);
 	cv::Rodrigues( rotation, rotation33 );
 	
 	for ( int x = 0; x < 3; ++x )
@@ -427,8 +422,6 @@ ExtrCalibrator::ExtrCalib ( int type, double (* markerPos2d)[2], double (* marke
 
 	// SaveMatrix ( rotation, dst_file_rot );
 	// SaveMatrix ( translation, dst_file_trans );
-	
-	// Extrinsic = Rotation | Translation
 	// ReadExtrParaFileSub ( type );
 
 	return;
@@ -445,6 +438,7 @@ ExtrCalibrator::GetMatrix(int deviceType, int matType)
 		{
 		case INTR:		return m_CamIntr;
 		case DIST:		return m_CamDist;
+		case EXTR:		return m_CamExtr;
 		}
 			
 		break;
@@ -455,9 +449,13 @@ ExtrCalibrator::GetMatrix(int deviceType, int matType)
 		{
 		case INTR:		return m_ProIntr;
 		case DIST:		return m_ProDist;
+		case EXTR:		return m_ProExtr;
 		}
 			
 		break;
+
+	default:
+		return m_CamIntr;
 	}
 
 	return m_CamIntr;
@@ -469,7 +467,7 @@ ExtrCalibrator::PrintMatrix ( const cv::Mat & matrix )
 	for ( int y = 0; y < matrix.size().height; ++y ) 
 	{
 		for ( int x = 0; x < matrix.size().width; ++x ) {
-			printf ( "%f\t", matrix.at<double>(y, x) ); 
+			printf ( "%.6f\t", matrix.at<double>(y, x) ); 
 		}
 		printf ( "\n" );
 	}
@@ -479,18 +477,24 @@ ExtrCalibrator::PrintMatrix ( const cv::Mat & matrix )
 }
 
 void 
-ExtrCalibrator::SaveMatrix ( const cv::Mat & matrix, const char * fname )
+ExtrCalibrator::SaveMatrix ( const cv::Mat & mat, const char * fname)
 {
 	FILE * fp = fopen ( fname, "w" );
+	if ( fp == NULL ) { return; }
 
-	for ( int y = 0; y < matrix.size().height; ++y ) 
+	for ( int y = 0; y < mat.rows; ++y ) 
 	{
-		for ( int x = 0; x < matrix.size().width; ++x ) {
-			fprintf ( fp, "%f\t", matrix.at<double>(y, x) ); 
+		for ( int x = 0; x < mat.cols; ++x ) {
+			fprintf ( fp, "%f\t", mat.at<double>(y, x) ); 
 		}
 		fprintf ( fp, "\n" );
 	}
 
-	fprintf ( fp, "\n" );
 	fclose ( fp );
+}
+
+void 
+ExtrCalibrator::SaveMatrix ( int deviceType, int matType, const char * fname )
+{
+	SaveMatrix(GetMatrix(deviceType, matType), fname);
 }

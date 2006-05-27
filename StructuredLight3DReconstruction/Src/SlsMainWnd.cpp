@@ -36,12 +36,8 @@ void SlsMainWnd::SLSStatusCB(int value)
 	case SLS_INIT_PROJECTING:		sprintf(str, "SLS_INIT_PROJECTING\n");		break;
 	case SLS_PROJECTING:				sprintf(str, "SLS_PROJECTING\n");				break;
 	case SLS_CALC_SHAPE:				sprintf(str, "SLS_CALC_SHAPE\n");				break;
-	
-	case SLS_EXIT:							sprintf(str, "SLS_EXIT\n");
-													printf("SLS_EXIT\n");
-													system("pause");
-													exit(0);
-
+	case SLS_EXIT:							sprintf(str, "SLS_EXIT\n");							break;
+											
 	default :									sprintf(str, "INVALID SLS MODE\n");				break;
 	}
 

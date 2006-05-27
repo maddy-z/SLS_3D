@@ -37,7 +37,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\3rd Party Lib\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\3rd Party Lib\include\OpenCV_2.3.1;..\3rd Party Lib\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\3rd Party Lib\lib\OpenGL\Glut;..\3rd Party Lib\lib\OpenCV_2.3.1;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -46,6 +47,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opencv_imgproc231d.lib;opencv_calib3d231d.lib;opencv_highgui231d.lib;opencv_core231d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

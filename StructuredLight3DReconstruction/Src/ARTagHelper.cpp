@@ -111,7 +111,7 @@ ARTagHelper::~ARTagHelper()
 void ARTagHelper::FindMarkerCorners( unsigned char * image )
 {
 	std::cout << "Start:\tvoid ARTagHelper::FindMarkerCorners ( unsigned char * )" << std::endl;
-	// std::cout << "Marker Number = " << m_MarkerNum << std::endl;
+	std::cout << "Marker Number = " << m_MarkerNum << std::endl;
 
 	artag_find_objects ( image, 1 );
 	int nFound = 0;
@@ -142,10 +142,47 @@ void ARTagHelper::FindMarkerCorners( unsigned char * image )
 		}
 	}
 
-	// std::cout << "Mark Found " << nFound << std::endl;
-	std::cout << "End:\tvoid ARTagHelper::FindMarkerCorners( unsigned char * )" << std::endl;
+	std::cout << "Mark Found " << nFound << std::endl;
+	std::cout << "End:\tvoid ARTagHelper::FindMarkerCorners ( unsigned char * )" << std::endl;
 
 	return;
+}
+
+void ARTagHelper::PrintMarkerCornersPos2dInCam () const
+{
+	for ( int i = 0; i < m_MarkerNum; ++i ) 
+	{
+		if ( !m_ValidFlagCam[i] ) { continue; }
+		
+		for ( int j = 0; j < 4; ++j ) {
+			printf("<%.3f, %.3f>\n", m_MarkerCornerPosCam2d[i*4+j][0], m_MarkerCornerPosCam2d[i*4+j][1]);
+		}
+	}
+}
+
+void ARTagHelper::PrintMarkerCornersPos2dInProjector() const
+{
+	for ( int i = 0; i < m_MarkerNum; ++i ) 
+	{
+		if ( !m_ValidFlagPro[i] ) { continue; }
+		
+		for ( int j = 0; j < 4; ++j ) {
+			printf("<%.3f, %.3f>\n", m_MarkerCornerPosPro2d[i*4+j][0], m_MarkerCornerPosPro2d[i*4+j][1]);
+		}
+	}
+}
+
+void ARTagHelper::PrintMarkerCornersPos3d() const
+{
+	for ( int i = 0; i < m_MarkerNum; ++i ) 
+	for ( int j = 0; j < 4; ++j )
+	{
+		double x = m_MarkerCornerPos3d[i*4+j][0];
+		double y = m_MarkerCornerPos3d[i*4+j][1];
+		double z = m_MarkerCornerPos3d[i*4+j][2];
+		
+		printf("<%.3f, %.3f, %.3f>\n", x, y, z);
+	}
 }
 
 void ARTagHelper::GetMarkerCornerPos2dInProjector ( GrayCode * gc )

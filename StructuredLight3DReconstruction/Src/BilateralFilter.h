@@ -4,6 +4,7 @@
 #include <vector>
 
 class BilateralFilter
+
 {
 
 public:
@@ -21,7 +22,7 @@ public:
 
 	bool Filter(const double * src, double * dest, int height, int width, int channel);
 
-	void printFilterInfo() const
+	void PrintFilterInfo() const
 	{
 		printf("Bilateral Filter Information:\n\n");
 		

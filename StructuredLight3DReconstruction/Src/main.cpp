@@ -2,8 +2,9 @@
 #include	<cstdlib>
 #include	<cassert>
 
-#include	<OpenCV_2.3.1\opencv2\opencv.hpp>
+#include	<windows.h>
 
+#include	<OpenCV_2.3.1\opencv2\opencv.hpp>
 #include	<OpenGL\Glui\glui.h>
 #include	<OpenGL\Glut\glut.h>
 
@@ -13,6 +14,7 @@
 #include	"PointGreyCamera.h"
 #include	"ARTagHelper.h"
 #include	"ExtrCalibrator.h"
+#include	"GrayCode.h"
 
 // =======================
 //	 MACROS DEFINITIONS
@@ -22,20 +24,28 @@
 #define						SLS_CAPTUREDIMAGE_WINNAME				"Captured Raw Image"
 #define						SLS_PROCIMAGE_WINNAME						"Processed Image"
 
+// #define						SHOW_CAPIMAGE_IN_OPENCVWIN
+
 // ======================
 //  Global Variables
 // ======================
 
-int								glutMainWndHandler		= -1;
+int								glutMainWndHandler			= -1;
 
-SlsMainWnd				* gluiMainWndHandler	= NULL;
-SlsParam					* slsParameters				= NULL;
-PointGreyCamera		* pgCamera					= NULL;
-ARTagHelper				* artagHelper					= NULL;
-ExtrCalibrator			* extrCalib					= NULL;
+SlsMainWnd				* gluiMainWndHandler		= NULL;
+SlsParam					* slsParameters					= NULL;
+PointGreyCamera		* pgCamera						= NULL;
+ARTagHelper				* artagHelper						= NULL;
+ExtrCalibrator			* extrCalib						= NULL;
+GrayCode					* grayCode						= NULL;
 
-unsigned char			* capturedRawImage		= NULL;
-unsigned char			* processedImage			= NULL;
+unsigned char			* capturedRawImage			= NULL;
+unsigned char			* capturedRawImage3Ch	= NULL;
+unsigned char			* processedImage				= NULL;
+
+
+int lastGrayCodeDispMode = GrayCode::DISP_GRAYCODE;
+int lastGrayCodeHVMode = GrayCode::VERT;
 
 // =======================
 //  Global Utility Functions
@@ -54,7 +64,7 @@ bool CaptureImage ( unsigned char * rawImg, unsigned char * procImg, const cv::M
 	int camH = slsParameters->GetCameraHeight();
 	int camW = slsParameters->GetCameraWidth();
 
-	if (slsParameters->GetCameraType() == SlsParam::DRAGONFLY_EXPRESS) 
+	if ( slsParameters->GetCameraType() == SlsParam::DRAGONFLY_EXPRESS ) 
 	{
 		pgCamera->Capture(rawImg);
 		
@@ -83,9 +93,9 @@ bool CaptureImage ( unsigned char * rawImg, unsigned char * procImg, const cv::M
 	return false;
 }
 
-// ==============
+// ===============
 // Main Loop
-// ==============
+// ===============
 
 static void Display(void)
 {
@@ -110,65 +120,145 @@ static void Display(void)
 	bool isCaptured = false;
 
 	//
-	// Processing SLS Status
+	// Process SLS Status
 	// 
-
-	SlsMainWnd::SLS_MODE mode = gluiMainWndHandler->getSlsMode();
-	switch ( mode )
-	{
 	
-	case SlsMainWnd::SLS_IDLE:
-		break;
-
-	case SlsMainWnd::SLS_CAPTURE_IMAGE:
-
+	if ( gluiMainWndHandler->getSlsMode() == SlsMainWnd::SLS_IDLE )
+	{
+		;
+	}
+	else if ( gluiMainWndHandler->getSlsMode() == SlsMainWnd::SLS_CAPTURE_IMAGE ) 
+	{
+		std::cout << "Camera Intrinsic and Distortion Params:" << std::endl;
 		extrCalib->PrintMatrix(extrCalib->GetMatrix(ExtrCalibrator::CAMERA, ExtrCalibrator::INTR));
 		extrCalib->PrintMatrix(extrCalib->GetMatrix(ExtrCalibrator::CAMERA, ExtrCalibrator::DIST));
+
+		// std::cout << "Projector Intrinsic and Distortion Params:" << std::endl;
+		// extrCalib->PrintMatrix(extrCalib->GetMatrix(ExtrCalibrator::PROJECTOR, ExtrCalibrator::INTR));
+		// extrCalib->PrintMatrix(extrCalib->GetMatrix(ExtrCalibrator::PROJECTOR, ExtrCalibrator::DIST));
 
 		isCaptured = CaptureImage (	capturedRawImage, 
 													processedImage, 
 													extrCalib->GetMatrix(ExtrCalibrator::CAMERA, ExtrCalibrator::INTR),
 													extrCalib->GetMatrix(ExtrCalibrator::CAMERA, ExtrCalibrator::DIST)
 													);
-
-		// memset(processedImage, 0, cameraW * cameraH * 3);
 		
-		if ( !(isCaptured) ) { 
-			std::cout << "Invalid Captured Image" << std::endl;
-		}
+		if ( ! ( isCaptured ) ) { std::cout << "Invalid Captured Image" << std::endl; }
 
+#ifdef SHOW_CAPIMAGE_IN_OPENCVWIN
 		ShowImageInOpenCvWindow(SLS_CAPTUREDIMAGE_WINNAME, capturedRawImage, 4, cameraH, cameraW);
 		ShowImageInOpenCvWindow(SLS_PROCIMAGE_WINNAME, processedImage, 3, cameraH, cameraW);
-		gluiMainWndHandler->setSlsMode(SlsMainWnd::SLS_IDLE);
+		cv::setMouseCallback(SLS_PROCIMAGE_WINNAME, ClickOnMouse, 0);
+#endif
+
+		gluiMainWndHandler->setSlsModeIdle();
+	}
+	else if ( gluiMainWndHandler->getSlsMode() == SlsMainWnd::SLS_DETECT_ARTAG )
+	{
+		CopyRawImageBufByDiffChannel(capturedRawImage, 4, capturedRawImage3Ch, 3, cameraH, cameraW);
+		artagHelper->FindMarkerCorners(capturedRawImage3Ch);
+		// artagHelper->FindMarkerCorners(capturedRawImage);
+		// artagHelper->PrintMarkerCornersPos2dInCam();
 		
-		break;
-	
-	case SlsMainWnd::SLS_DETECT_ARTAG:
+		extrCalib->ExtrCalib ( ExtrCalibrator::CAMERA, artagHelper->m_MarkerCornerPosCam2d, artagHelper->m_MarkerCornerPos3d, artagHelper->m_ValidFlagCam );
+		
+		std::cout << "Camera Extr Params From Raw Image:" << std::endl;
+		extrCalib->PrintMatrix(extrCalib->GetMatrix(ExtrCalibrator::CAMERA, ExtrCalibrator::EXTR));
+
+		// --------------------------------------------------
+		// --------------------------------------------------
+
 		artagHelper->FindMarkerCorners(processedImage);
-		gluiMainWndHandler->setSlsMode(SlsMainWnd::SLS_IDLE);
+		// artagHelper->PrintMarkerCornersPos2dInCam();
+		
+		extrCalib->ExtrCalib ( ExtrCalibrator::CAMERA, artagHelper->m_MarkerCornerPosCam2d, artagHelper->m_MarkerCornerPos3d, artagHelper->m_ValidFlagCam );
+		
+		std::cout << "Camera Extr Params From Processed Image:" << std::endl;
+		extrCalib->PrintMatrix ( extrCalib->GetMatrix(ExtrCalibrator::CAMERA, ExtrCalibrator::EXTR) );
 
-		break;
-
-	case SlsMainWnd::SLS_INIT_PROJECTING:
-		// TODO:
+		gluiMainWndHandler->setSlsModeIdle();
+	}
+	else if ( gluiMainWndHandler->getSlsMode() == SlsMainWnd::SLS_INIT_PROJECTING )
+	{
+		grayCode->InitDispCode(1, GrayCode::DISP_GRAYCODE, GrayCode::VERT);
+		lastGrayCodeDispMode = GrayCode::DISP_GRAYCODE;
+		lastGrayCodeHVMode = GrayCode::VERT;
+		
 		gluiMainWndHandler->setSlsMode(SlsMainWnd::SLS_PROJECTING);
+	}
+	else if ( gluiMainWndHandler->getSlsMode() == SlsMainWnd::SLS_PROJECTING )
+	{
+		Sleep(250);
 		
-		break;
+		isCaptured = CaptureImage (	capturedRawImage, 
+													processedImage, 
+													extrCalib->GetMatrix(ExtrCalibrator::CAMERA, ExtrCalibrator::INTR),
+													extrCalib->GetMatrix(ExtrCalibrator::CAMERA, ExtrCalibrator::DIST)
+													);
 
-	case SlsMainWnd::SLS_PROJECTING:
+		if ( isCaptured ) 
+		{
+			grayCode->CaptureCode(processedImage);
 
-		break;
+			if ( grayCode->GetNextFrame () == false ) 
+			{
+				if ( lastGrayCodeDispMode == GrayCode::DISP_GRAYCODE ) 
+				{
+					if ( lastGrayCodeHVMode == GrayCode::VERT ) 
+					{
+						grayCode->EncodeGray2Binary();
+						grayCode->InitDispCode(1, GrayCode::DISP_ILLUMI);
+						
+						lastGrayCodeDispMode = GrayCode::DISP_ILLUMI;
+						lastGrayCodeHVMode = GrayCode::VERT;
+					}
+					else if ( lastGrayCodeHVMode == GrayCode::HORI ) 
+					{
+						grayCode->EncodeGray2Binary();
+						grayCode->SetDispModeIdle();
+						gluiMainWndHandler->setSlsModeIdle();
+						
+						artagHelper->GetMarkerCornerPos2dInProjector(grayCode);
 
-	case SlsMainWnd::SLS_CALC_SHAPE:
-		
-		break;
-	
+						std::cout << "Marker Corners Pos 2d In Projector" << std::endl;
+						artagHelper->PrintMarkerCornersPos2dInProjector();
+						std::cout << std::endl;
+
+						extrCalib->ExtrCalib ( ExtrCalibrator::CAMERA, artagHelper->m_MarkerCornerPosCam2d, artagHelper->m_MarkerCornerPos3d, artagHelper->m_ValidFlagCam );
+						extrCalib->ExtrCalib ( ExtrCalibrator::PROJECTOR, artagHelper->m_MarkerCornerPosPro2d, artagHelper->m_MarkerCornerPos3d, artagHelper->m_ValidFlagPro );
+						extrCalib->SaveMatrix( ExtrCalibrator::CAMERA, ExtrCalibrator::EXTR, slsParameters->GetExtrFilePath(SlsParam::CAMERA));
+						extrCalib->SaveMatrix( ExtrCalibrator::PROJECTOR, ExtrCalibrator::EXTR, slsParameters->GetExtrFilePath(SlsParam::PROJECTOR));
+
+						std::cout << "Camera Extr Params:" << std::endl;		extrCalib->PrintMatrix(extrCalib->GetMatrix(ExtrCalibrator::CAMERA, ExtrCalibrator::EXTR));
+						std::cout << "Projector Extr Params:" << std::endl;	extrCalib->PrintMatrix(extrCalib->GetMatrix(ExtrCalibrator::PROJECTOR, ExtrCalibrator::EXTR));
+					}
+				}
+				else if ( lastGrayCodeDispMode == GrayCode::DISP_ILLUMI ) 
+				{
+					grayCode->InitDispCode(1, GrayCode::DISP_GRAYCODE, GrayCode::HORI);
+					
+					lastGrayCodeDispMode = GrayCode::DISP_GRAYCODE;
+					lastGrayCodeHVMode = GrayCode::HORI;
+				}
+			}		
+		}
+	}
+	else if ( gluiMainWndHandler->getSlsMode() == SlsMainWnd::SLS_CALC_SHAPE )
+	{		
+		// TODO:
+	}
+	else if ( gluiMainWndHandler->getSlsMode() == SlsMainWnd::SLS_EXIT )
+	{
+		pgCamera->Stop();
+
+		gluiMainWndHandler->setSlsModeIdle();
 	}
 
 	// 
 	// Initialize OpenGL Environment
 	// 
 
+	// glDrawBuffer(GL_BACK);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -180,8 +270,6 @@ static void Display(void)
 
 	glMatrixMode(GL_MODELVIEW);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	// glLoadIdentity();
-	// gluLookAt(0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
 	// 
 	// Draw Captured Image
@@ -206,7 +294,7 @@ static void Display(void)
 
 	glLoadIdentity();
 	glTranslatef( slsParameters->GetMainWindowInMainDisplayWidth(), 0.0f, 0.0f );
-	glColor3d( 1.0f, 1.0f, 1.0f );
+	glColor3f( 1.0f, 1.0f, 1.0f );
 	glBegin(GL_QUADS);
 		glVertex2i(0, 0);
 		glVertex2i(projectorW, 0);
@@ -214,17 +302,12 @@ static void Display(void)
 		glVertex2i(0, projectorH);
 	glEnd();
 
-	if (mode == SlsMainWnd::SLS_PROJECTING) 
+	if ( gluiMainWndHandler->getSlsMode() == SlsMainWnd::SLS_PROJECTING ) 
 	{
 		glLoadIdentity();
 		glTranslatef(slsParameters->GetMainWindowInMainDisplayWidth(), 0.0f, 0.0f);
-		// Display Gray Code
-		// TODO:
+		grayCode->DispCode();
 	}
-
-	// 
-	// Swap Buffers
-	//
 
 	glutSwapBuffers();
 }
@@ -233,7 +316,7 @@ static void Display(void)
 // Main Function
 // 
 
-int main(int argc, char ** argv)
+int main ( int argc, char ** argv )
 {
 	// =============================
 	//	  Load SLS Params & Initializations
@@ -254,17 +337,38 @@ int main(int argc, char ** argv)
 		slsParameters->GetARTagPosFilePath()
 		);
 
-	extrCalib = new ExtrCalibrator(artagHelper->GetMarkerNumber());
-	extrCalib->ReadIntrParaFile(	slsParameters->GetIntrFilePath(SlsParam::CAMERA),
-												slsParameters->GetDistortionFilePath(SlsParam::CAMERA),
-												slsParameters->GetIntrFilePath(SlsParam::PROJECTOR),
-												slsParameters->GetDistortionFilePath(SlsParam::PROJECTOR)
+	std::cout << "Marker Corners Position 3D:" << std::endl;
+	artagHelper->PrintMarkerCornersPos3d();
+
+	extrCalib = new ExtrCalibrator ( artagHelper->GetMarkerNumber(),
+													slsParameters->GetIntrFilePath(SlsParam::CAMERA),
+													slsParameters->GetDistortionFilePath(SlsParam::CAMERA),
+													slsParameters->GetIntrFilePath(SlsParam::PROJECTOR),
+													slsParameters->GetDistortionFilePath(SlsParam::PROJECTOR)
+													);
+	
+	std::cout << "Camera Intrinsic and Distortion Parameters:" << std::endl;
+	extrCalib->PrintMatrix(extrCalib->GetMatrix(ExtrCalibrator::CAMERA, ExtrCalibrator::INTR));
+	extrCalib->PrintMatrix(extrCalib->GetMatrix(ExtrCalibrator::CAMERA, ExtrCalibrator::DIST));
+
+	std::cout << "Projector Intrinsic and Distortion Parameters:" << std::endl;
+	extrCalib->PrintMatrix(extrCalib->GetMatrix(ExtrCalibrator::PROJECTOR, ExtrCalibrator::INTR));
+	extrCalib->PrintMatrix(extrCalib->GetMatrix(ExtrCalibrator::PROJECTOR, ExtrCalibrator::DIST));
+
+	grayCode = new GrayCode (	slsParameters->GetCameraWidth(), 
+												slsParameters->GetCameraHeight(), 
+												slsParameters->GetProjectorWidth(), 
+												slsParameters->GetProjectorHeight(), 
+												false, 
+												slsParameters->GetGrayCodeDir() 
 												);
 
-	capturedRawImage = new unsigned char[slsParameters->GetCameraHeight() * slsParameters->GetCameraWidth() * 4];
-	processedImage	 = new unsigned char[slsParameters->GetCameraHeight() * slsParameters->GetCameraWidth() * 3];
-
+	capturedRawImage		= new unsigned char[slsParameters->GetCameraHeight() * slsParameters->GetCameraWidth() * 4];
+	capturedRawImage3Ch	= new unsigned char[slsParameters->GetCameraHeight() * slsParameters->GetCameraWidth() * 3];
+	processedImage			= new unsigned char[slsParameters->GetCameraHeight() * slsParameters->GetCameraWidth() * 3];
+	
 	memset(capturedRawImage, 0, slsParameters->GetCameraHeight() * slsParameters->GetCameraWidth() * 4);
+	memset(capturedRawImage3Ch, 0, slsParameters->GetCameraHeight() * slsParameters->GetCameraWidth() * 3);
 	memset(processedImage, 0, slsParameters->GetCameraHeight() * slsParameters->GetCameraWidth() * 3);
 
 	// ===================
@@ -281,6 +385,7 @@ int main(int argc, char ** argv)
 
 	glutMainWndHandler = glutCreateWindow("Structured Light 3D Reconstruction System");
 	gluiMainWndHandler = SlsMainWnd::Instance(glutMainWndHandler);
+	// gluiMainWndHandler->setSlsMode(SlsMainWnd::SLS_CAPTURE_IMAGE);
 
 	glutPositionWindow(slsParameters->GetWindowPosX(), 0);
 	glutDisplayFunc(Display);

@@ -1,75 +1,56 @@
 #ifndef	_GRAYCODE_H_
 #define _GRAYCODE_H_
 
-// 
+// =====================
 // Class GrayCode
-// 
+// =====================
 
 class GrayCode
-
 {
-
-	friend void Display(void);
-	friend int main(int , char ** );
+	friend void Display ( void );
 
 private:
 	
-	int m_GBit;										// Current Bit Depth
+	int m_GBit;														// Current Bit Depth
 
-	int m_CodeDepth;								// Bit depth of gray code
-	int m_CodeResolution;						// Spatial resolution (pixel) of Gray Code
+	int m_CodeDepth;												// Bit depth of Gray Code
+	int m_CodeResolution;										// Spatial resolution (pixel) of Gray Code
 
-	int m_SlitWidth;									// Slit width of each projected white stripe
-	int m_SlitInterval;								// Spatial interval (pixel) of multi-slit
+	int m_SlitWidth;													// Slit width of each projected white stripe
+	int m_SlitInterval;												// Spatial interval (pixel) of multi-slit
 
-	unsigned char * m_Diff;						// Store binarized image derived from difference between nega / positive images
+	unsigned char * m_Diff;										// Store binarized image derived from difference between nega / positive images
 
-	int m_CameraWidth;							// Camera Size
-	int m_CameraHeight;
+	int m_CameraWidth, m_CameraHeight;			 	// Camera Size
+	int m_ProjectorWidth, m_ProjectorHeight;			// Projector Size
 
-	int m_ProjectorWidth;						// Projector Size
-	int m_ProjectorHeight;
-
-	double * m_Sum;								// Buffers for multi-slit projection
+	double * m_Sum;												// Buffers for multi-slit projection
 	double * m_Num;
 
-	// Directory Name
-	char m_DirName[128];
+	char m_DirName[128];										// Directory Name
 
 	// bool skip_graycode;
 
-	// Sequence of Projector Placement
-	int m_ProjSeqNum;
+	int m_ProjSeqNum;											// Sequence of Projector Placement
 
 public:
 
-	int m_bSlit;										// Flag ( True / False: With / Without multi-slit projection )
+	int m_bSlit;														// Flag ( True / False: With / Without Multi-Slit Projection )
 
-	// C2P map ( double / int -> with / without multi-slit projection )
-	int * m_C2P[2];
+	unsigned int * m_C2P[2];									// C2P map ( Double / Int -> With / Without Multi-Slit Projection )
 	double * m_C2P_DB[2];
+	unsigned char * m_C2P_UC[2];							// C2P map ( For Displaying )
 
-	// C2P map ( For Displaying )
-	unsigned char * m_C2P_UC[2];
-
-	// FM / EM
-	unsigned char * m_White;
-	unsigned char * m_Black;
+	unsigned char * m_White, * m_Black;					// FM / EM
 
 	unsigned char * m_Illuminance;
 	unsigned char * m_Compensate;
 
-	// Binalized multi-slit image ( captured )
-	unsigned char * m_bSlitImg;
+	unsigned char * m_bSlitImg;								// Binalized multi-slit image ( captured )
+	bool * m_Mask;													// Mask image ( Remove non-projected (e.g. shadow) region )
 
-	// Mask image ( Remove non-projected (e.g. shadow) region )
-	bool * m_Mask;
-
-	// Threshold for normalize captured multi-slit images
-	int m_NormThres;
-
-	// "m_CurrSlitNum" - The slit is currently projected
-	int m_CurrSlitNum;
+	int m_NormThres;												// Threshold for normalize captured multi-slit images
+	int m_CurrSlitNum;												// m_CurrSlitNum -- The slit is currently projected
 
 	// 
 	// Program mode definition 
@@ -89,7 +70,7 @@ public:
 		DISP_ILLUMI 
 	} m_DispMode;
 
-	// 
+	//
 	// NEGATIVE - POSITIVE Pattern Projection
 	// 
 	
@@ -112,13 +93,14 @@ public:
 	// 
 	// Binary Mode
 	// 
-	// AVG_MODE  --	capture usual intensity image.
-	//				each color channels are averaged 
+	// AVG_MODE --	capture usual intensity image.
+	//							each color channels are averaged 
 	// 
 	// DIFF_MODE --	for binarized images.
-	// 				captured image is compared with the other intensity image.
-	//				it is used for NEGA / POSI binarizing method.
-
+	// 						captured image is compared with the other intensity image.
+	//							it is used for NEGATIVE / POSITIVE binarizing method.
+	// 
+	
 	enum 
 	{ 
 		AVG_MODE, 
@@ -131,7 +113,7 @@ public:
 	// Constructor & Destructor
 	// 
 
-	GrayCode ( int cameraW, int cameraH, int projectorW, int projectorH, bool bSlit, char * dirname );
+	GrayCode ( int cameraW, int cameraH, int projectorW, int projectorH, bool bSlit, const char * dirname );
 	virtual ~GrayCode();
 
 	//
@@ -139,24 +121,28 @@ public:
 	// 
 	
 	void InitDispCode ( int nProjSeq );
-	void InitDispCode ( int nProjSeq, int dispMode );
+	void InitDispCode ( int nProjSeq, int dispMode, int hvMode = GrayCode::VERT);
 
 	//
-	// Projection Image generation / Display projection image
+	// Projection Image Generation / Display Projection Image
 	//
 
 	//
-	// Binary (normal) <-> Gray code converter
+	// Binary ( Normal ) <-> Gray Code Converter
 	// 
 	
+	void EncodeGray2Binary();
+
 	unsigned int Gray2Binary ( unsigned int g );
 	unsigned int Binary2Gray ( unsigned int b );
 
 	//
 	// Display code
-	// - hv_mode: flag for horizontal / vertical pattern
+	// - hv_mode: Flag for Horizontal / Vertical pattern
 	// 
 
+	void DispCode ();
+	void DispCode ( int hv_mode );
 	void DispCode ( int hv_mode, int np_mode );
 
 	// ============================
@@ -168,7 +154,8 @@ public:
 	// - image: captured image
 	// 
 
-	void CaptureCode ( unsigned char * image );
+	void CaptureCode ( const unsigned char * image );
+	void CaptureCode ( const unsigned char * image, int dispMode, int hvMode, unsigned int nthFrame );
 
 	// 
 	// Binalize captured image through subtaction of NEGA/POSI images (for graycode projection)
@@ -177,7 +164,7 @@ public:
 	// - bin_mode: binarize mode (AVG_MODE / DIFF_MODE)
 	// 
 
-	void Binarize ( unsigned char * color, int bin_mode );
+	void Binarize ( const unsigned char * color, int bin_mode );
 
 	//
 	// Image processing for multi-slit projection
@@ -185,6 +172,13 @@ public:
 	// 
 
 	void CaptureSlit ( unsigned char * color );
+	
+	// 
+	// Ready to Display Next Frame
+	// 
+	
+	bool GetNextFrame ();
+	inline void SetDispModeIdle () { m_DispMode = DISP_IDLE; }
 
 	// ========================
 	// After Code projection
@@ -208,9 +202,9 @@ public:
 	//	Write out C2P map
 	// 
 
-	void WriteC2P( void );
+	void WriteC2P();
 	
-	int ShowProjectorIlluminace ( void );						// Calc Illumination intensity blending coefficients for projector
+	int ShowProjectorIlluminace();									// Calc Illumination intensity blending coefficients for projector
 
 	void SaveIlluminace ( unsigned char * color );
 	void SaveCompensate ( unsigned char * color );

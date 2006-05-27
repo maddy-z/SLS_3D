@@ -24,34 +24,6 @@ void ShowBinary(unsigned int num)
 	std::cout << std::endl;
 }
 
-/*
-
-unsigned int Binary2Gray(unsigned int b)
-{
-	unsigned int ans = (b >> 31);
-	
-	for (int i = 30; i >= 0; --i) {
-		ans <<= 1;
-		ans |= ( ((b >> i) ^ (b >> (i+1))) & 0x1 );
-	}
-
-	return ans;
-}
-
-unsigned int Gray2Binary(unsigned int g)
-{
-	unsigned int ans = (g >> 31);
-
-	for (int i = 30; i >= 0; --i) {
-		ans <<= 1;
-		ans |= ((g >> i) ^ (ans >> 1)) & 0x1;
-	}
-
-	return ans;
-}
-
-*/
-
 // 
 // Global Variables
 // 
@@ -59,8 +31,8 @@ unsigned int Gray2Binary(unsigned int g)
 bool IsHori = false;
 bool IsNegative = true;
 
-int projectorWidth = 1024;
-int projectorHeight = 1024;
+int projectorWidth = 800;
+int projectorHeight = 600;
 
 int glutMainWndHandler = -1;
 
@@ -74,7 +46,7 @@ int np_mode = GrayCode::POSITIVE;
 
 void Display(void)
 {
-	gc->m_DispMode = GrayCode::DISP_GRAYCODE;
+	// gc->m_DispMode = GrayCode::DISP_GRAYCODE;
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -88,6 +60,13 @@ void Display(void)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
+	gc->DispCode();
+	if ( !gc->NextFrame() )
+	{
+		gc->InitDispCode(1, GrayCode::DISP_GRAYCODE, GrayCode::HORI);
+	}
+
+	/*
 	if ( IsHori ) { gc->DispCode(GrayCode::HORI, np_mode); }
 	else { gc->DispCode(GrayCode::VERT, np_mode); }
 
@@ -99,6 +78,7 @@ void Display(void)
 
 	if ( np_mode == GrayCode::POSITIVE ) { np_mode = GrayCode::NEGATIVE; }
 	else { np_mode = GrayCode::POSITIVE; } 
+	*/
 	
 	Sleep(800);
 
@@ -130,8 +110,8 @@ int main(int argc, char ** argv)
 
 	std::cout << std::endl;
 	*/
-	gc->m_GBit = gc->m_CodeDepth - 1;
-	gc ->InitDispCode(1);
+
+	gc ->InitDispCode(1, GrayCode::DISP_GRAYCODE, GrayCode::HORI);
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);

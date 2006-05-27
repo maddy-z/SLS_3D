@@ -58,6 +58,25 @@ bool CopyCvMat2RawImageBuf(const cv::Mat & srcImg, unsigned char * destImg, unsi
 	return true;
 }
 
+bool CopyRawImageBufByDiffChannel (	const unsigned char * srcImg, unsigned int srcCh, 
+															unsigned char * destImg, unsigned int destCh,
+															unsigned int h, unsigned int w)
+{
+	if ( srcImg == NULL || destImg == NULL ) { return false; }
+
+	const unsigned char * srcPtr = srcImg;
+	unsigned char * destPtr = destImg;
+	unsigned int minCh = (srcCh < destCh) ? (srcCh) : (destCh);
+
+	for ( int i = 0; i < h; ++i ) 
+	for ( int j = 0; j < w; ++j, srcPtr += srcCh, destPtr += destCh ) 
+	for ( int k = 0; k < minCh; ++k) {
+		destPtr[k] = srcPtr[k];
+	}
+
+	return true;
+}
+
 // ==================
 // Experiment Functions
 // ==================
@@ -88,4 +107,13 @@ void ShowImageInOpenCvWindow(const char * windowName, unsigned char * srcImg, in
 	cv::imshow(windowName, destImg);
 
 	return;
+}
+
+void ClickOnMouse ( int mouseEvent, int x, int y, int, void * )
+{
+	if ( mouseEvent != CV_EVENT_LBUTTONDOWN ) {
+		return;
+	}
+
+	printf("Mouse Clicked On Pt <x, y> = <%d, %d>\n", x, y);
 }

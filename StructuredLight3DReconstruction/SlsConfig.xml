@@ -35,6 +35,7 @@
     <Dist name="dist.txt" />
     <Rot name="rot.txt" />
     <Trans name="trans.txt" />
+    <Extr name="extr.txt" />
     <ARTag config="marker_cfg_a4.txt" pos="marker_pos_a4.txt" />
     <Obj name="data.obj" />
     <Extrpos name="extrpos.txt" />
