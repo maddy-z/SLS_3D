@@ -17,7 +17,7 @@ class SlsMainWnd
 {
 
 	friend class std::auto_ptr<SlsMainWnd>;
-	friend void Display(void);
+	friend void Display ( void );
 
 public:
 
@@ -40,14 +40,14 @@ public:
 		SLS_PROJECTOR_EXTR
 	};
 
-	static SlsMainWnd * Instance(int glutWndHandler = -1);
+	static SlsMainWnd * Instance ( int glutWndHandler = -1 );
 
-	static void SLSStatusCB(int value);
-	static void SLSIdleFunc(void);
+	static void SLSStatusCB ( int value );
+	static void SLSIdleFunc ( void );
 
 	virtual ~SlsMainWnd();
 
-	int registBindingGlutSubWnd(int hGlutSubWnd) 
+	int registBindingGlutSubWnd ( int hGlutSubWnd ) 
 	{
 		m_GlutSubWndHandler = hGlutSubWnd;
 		m_GluiMainWnd->set_main_gfx_window(m_GlutSubWndHandler);

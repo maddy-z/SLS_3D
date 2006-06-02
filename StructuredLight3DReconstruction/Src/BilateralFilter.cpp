@@ -43,7 +43,7 @@ BilateralFilter(double spatialSigma, double rangeSigma, int kernelSize, int appr
 	for (int j = -m_Radius; j <= m_Radius; ++j) 
 	{
 		double r = sqrt((double)(i*i) + (double)(j*j));
-		if (r > m_Radius)
+		if ( r > m_Radius )
 			continue;
 
 		value = exp (r * r * gauss_space_coeff);
@@ -67,21 +67,21 @@ BilateralFilter::
 // 
 
 bool 
-BilateralFilter::Filter(const double * src, double * dest, int height, int width, int channel)
+BilateralFilter::Filter ( const double * src, double * dest, int height, int width, int channel )
 {
-	if (src == NULL || dest == NULL) {
+	if ( src == NULL || dest == NULL ) {
 		return false;
 	}
 
-	assert (channel == 1 || channel == 3);
-	assert (height >= 1 && width >= 1);
+	assert ( channel == 1 || channel == 3 );
+	assert ( height >= 1 && width >= 1 );
 
 	int newH = height + 2 * m_Radius, newW = width + 2 * m_Radius;
 	double * exSrc = new double[newH * newW * channel];
-	memset(exSrc, 0, newH * newW * channel * sizeof(double));
+	memset ( exSrc, 0, newH * newW * channel * sizeof(double) );
 
-	for (int i = m_Radius; i + m_Radius < newH; ++i)
-	for (int j = m_Radius; j + m_Radius < newW; ++j) {
+	for ( int i = m_Radius; i + m_Radius < newH; ++i )
+	for ( int j = m_Radius; j + m_Radius < newW; ++j ) {
 		exSrc[i * newW + j] = src[(i - m_Radius) * width + (j - m_Radius)];
 	}
 
@@ -111,20 +111,21 @@ BilateralFilter::Filter(const double * src, double * dest, int height, int width
 
 	m_SpatialOffset.clear();
 	
-	for (int i = -m_Radius; i <= m_Radius; ++i) 
-	for (int j = -m_Radius; j <= m_Radius; ++j) 
+	for ( int i = -m_Radius; i <= m_Radius; ++i ) 
+	for ( int j = -m_Radius; j <= m_Radius; ++j ) 
 	{
-		double r = sqrt((double)(i*i) + (double)(j*j));
-		if (r > m_Radius)
-			continue;
+		double r = sqrt ( (double)(i*i) + (double)(j*j) );
+		
+		if ( r > m_Radius ) {
+			continue; }
 	
 		m_SpatialOffset.push_back(i * newW + j);
 	}
 
 	assert (m_SpatialKernel.size() == m_SpatialOffset.size());
 
-	for (int i = m_Radius; i + m_Radius < newH; ++i) 
-	for (int j = m_Radius; j + m_Radius < newW; ++j) 
+	for ( int i = m_Radius; i + m_Radius < newH; ++i ) 
+	for ( int j = m_Radius; j + m_Radius < newW; ++j ) 
 	// for (int c = 0; c < channel; ++c)
 	{
 		double sum1 = 0.0f, sum2 = 0.0f;

@@ -825,7 +825,7 @@ int PointGreyCamera::Start( void )
 	// Start grabbing images in the current videomode and framerate.
 	//
 	
-	std::cout << "Start Camera..." << std::endl;
+	std::cout << "Start Camera...\n" << std::endl;
 	error = flycaptureStart ( context, v, f );
 	PG_HANDLE_ERROR ( error, "flycaptureStart()" );
 

@@ -117,3 +117,12 @@ void ClickOnMouse ( int mouseEvent, int x, int y, int, void * )
 
 	printf("Mouse Clicked On Pt <x, y> = <%d, %d>\n", x, y);
 }
+
+void ConvertMatrix ( const cv::Mat & srcMat, CvMat * destMat )
+{
+	for ( int i = 0; i < srcMat.rows; ++i ) { 
+		for ( int j = 0; j < srcMat.cols; ++j ) {
+			cvmSet(destMat, i, j, srcMat.at<double>(i, j));
+		}
+	}
+}

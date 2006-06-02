@@ -123,7 +123,10 @@ void ARTagHelper::FindMarkerCorners( unsigned char * image )
 			m_ValidFlagCam[i] = true;
 			nFound++;
 			
+			// 
 			// All the corners of the marker should be visible from the camera.
+			// 
+
 			for ( int j = 0; j < 4; j++ )
 			{
 				float camX, camY;
@@ -159,7 +162,6 @@ void ARTagHelper::PrintMarkerCornersPos2dInCam () const
 		}
 	}
 }
-
 void ARTagHelper::PrintMarkerCornersPos2dInProjector() const
 {
 	for ( int i = 0; i < m_MarkerNum; ++i ) 
@@ -171,7 +173,6 @@ void ARTagHelper::PrintMarkerCornersPos2dInProjector() const
 		}
 	}
 }
-
 void ARTagHelper::PrintMarkerCornersPos3d() const
 {
 	for ( int i = 0; i < m_MarkerNum; ++i ) 
@@ -183,6 +184,193 @@ void ARTagHelper::PrintMarkerCornersPos3d() const
 		
 		printf("<%.3f, %.3f, %.3f>\n", x, y, z);
 	}
+}
+void ARTagHelper::PrintRecalcMarkerCornersPos3d() const
+{
+	int count = 0;
+
+	for ( int i = 0; i < m_MarkerNum; ++i ) 
+	{
+		if ( !m_ValidFlagCam[i] || !m_ValidFlagPro[i] ) { continue; }
+
+		for ( int j = 0; j < 4; ++j ) 
+		{
+			printf ( "<" );
+			for ( int k = 0; k < m_Reconstructed3dPts.cols; ++k ) {
+				printf ( "%.3f ", m_Reconstructed3dPts.at<double>(count, k) );
+			}	
+			printf ( "> " );
+
+			++count;
+
+			double x = m_MarkerCornerPos3d[i*4+j][0];
+			double y = m_MarkerCornerPos3d[i*4+j][1];
+			double z = m_MarkerCornerPos3d[i*4+j][2];
+		
+			printf("<%.3f, %.3f, %.3f>\n", x, y, z);
+		}
+	}
+
+	return;
+}
+
+void ARTagHelper::SaveMarkerCornersPos ( int type, const char * fileName ) const
+{
+	if ( fileName == NULL ) { return; }
+
+	FILE * fp = fopen ( fileName, "w" );
+	if ( fp == NULL ) {
+		return;
+	}
+
+	if ( type == MARKER_IN_CAMERA ) 
+	{
+		for ( int i = 0; i < m_MarkerNum; ++i ) {
+			if ( !m_ValidFlagCam[i] ) { continue; }
+		
+			for ( int j = 0; j < 4; ++j ) {
+				fprintf ( fp, "<%.3f, %.3f>\n", m_MarkerCornerPosCam2d[i*4+j][0], m_MarkerCornerPosCam2d[i*4+j][1] );
+			}
+		}
+	}
+	else if ( type == MARKER_IN_PROJECTOR ) 
+	{
+		for ( int i = 0; i < m_MarkerNum; ++i ) 
+		{
+			if ( !m_ValidFlagPro[i] ) { continue; }
+		
+			for ( int j = 0; j < 4; ++j ) {
+				fprintf ( fp, "<%.3f, %.3f>", m_MarkerCornerPosPro2d[i*4+j][0], m_MarkerCornerPosPro2d[i*4+j][1] );
+				fprintf ( fp, "\t" );
+				fprintf ( fp, "<%.3f, %.3f, %.3f>", m_MarkerCornerPos3d[i*4+j][0], m_MarkerCornerPos3d[i*4+j][1], m_MarkerCornerPos3d[i*4+j][2] );
+				fprintf ( fp, "\n" );
+			}
+		}
+	}
+	else if ( type == MARKER_IN_REALWORLD )
+	{
+		for ( int i = 0; i < m_MarkerNum; ++i ) 
+		for ( int j = 0; j < 4; ++j )
+		{
+			double x = m_MarkerCornerPos3d[i*4+j][0];
+			double y = m_MarkerCornerPos3d[i*4+j][1];
+			double z = m_MarkerCornerPos3d[i*4+j][2];
+		
+			fprintf ( fp, "<%.3f, %.3f, %.3f>\n", x, y, z );
+		}
+	}
+	
+	fclose ( fp );
+}
+
+void ARTagHelper::RecalcMarkerCornersPos3d ( const cv::Mat & camIntr, 
+																		const cv::Mat & camExtr, 
+																		const cv::Mat & proIntr, 
+																		const cv::Mat & proExtr )
+{
+	int nValidCam = 0;
+	for ( int i = 0; i < m_MarkerNum; ++i ) { 
+		if ( m_ValidFlagCam[i] ) { ++nValidCam; }
+	}
+
+	int nValidPro = 0;
+	for ( int i = 0; i < m_MarkerNum; ++i ) {
+		if ( m_ValidFlagPro[i] ) { ++nValidPro; }
+	}
+
+	int nValid = ( nValidCam < nValidPro ) ? ( nValidCam ) : ( nValidPro );
+
+	CvMat * camPts = cvCreateMat ( 2, nValid * 4, CV_64FC1 );
+	CvMat * proPts = cvCreateMat ( 2, nValid * 4, CV_64FC1 );
+	CvMat * posPts = cvCreateMat ( 4, nValid * 4, CV_64FC1 );
+
+	int count = 0;
+	
+	for ( int i = 0; i < m_MarkerNum; ++i ) 
+	{
+		if ( !m_ValidFlagPro[i] || !m_ValidFlagCam[i] ) { continue; }
+
+		for ( int j = 0; j < 4; ++j ) 
+		{
+			cvmSet ( camPts, 0, count, m_MarkerCornerPosCam2d[i*4+j][0] );
+			cvmSet ( camPts, 1, count, m_MarkerCornerPosCam2d[i*4+j][1] );
+
+			cvmSet ( proPts, 0, count, m_MarkerCornerPosPro2d[i*4+j][0] );
+			cvmSet ( proPts, 1, count, m_MarkerCornerPosPro2d[i*4+j][1] );
+
+			++count;
+		}
+	}
+
+	assert ( count == nValid * 4);
+
+	cv::Mat camProj = camIntr * camExtr;
+	cv::Mat proProj = proIntr * proExtr;
+
+	CvMat * cProj = cvCreateMat ( 3, 4, CV_64FC1 );
+	CvMat * pProj = cvCreateMat ( 3, 4, CV_64FC1 );
+	
+	for ( int i = 0; i < 3; ++i )
+	for ( int j = 0; j < 4; ++j ) {
+		cvmSet ( cProj, i, j, camProj.at<double>(i, j) );
+		cvmSet ( pProj, i, j, proProj.at<double>(i, j) );
+	}
+
+	m_Reconstructed3dPts.create ( nValid * 4, 3, CV_64FC1 );
+
+	//cv::Mat F ( 3, 1, CV_64FC1 );
+	//cv::Mat Q ( 3, 3, CV_64FC1 );
+	//cv::Mat invQ ( 3, 3, CV_64FC1 );
+	//cv::Mat matPos3d ( 3, 1, CV_64FC1 );
+
+	//for ( int i = 0; i < nValid * 4; ++i )
+	//{
+	//	double x = cvmGet ( camPts, 0, i );
+	//	double y = cvmGet ( camPts, 1, i );
+	//	double xa = cvmGet ( proPts, 0, i );
+	//	double ya = cvmGet ( proPts, 1, i );
+
+	//	F.at<double>(0, 0) = x * camProj.at<double>(2, 3) - camProj.at<double>(0, 3);
+	//	F.at<double>(1, 0) = y * camProj.at<double>(2, 3) - camProj.at<double>(1, 3);
+	//	F.at<double>(2, 0) = xa * proProj.at<double>(2, 3) - proProj.at<double>(0, 3);
+	//	// F.at<double>(2, 0) = ya * proProj.at<double>(2, 3) - proProj.at<double>(1, 3);
+
+	//	Q.at<double>(0, 0) = camProj.at<double>(0, 0) - x * camProj.at<double>(2, 0);
+	//	Q.at<double>(0, 1) = camProj.at<double>(0, 1) - x * camProj.at<double>(2, 1);
+	//	Q.at<double>(0, 2) = camProj.at<double>(0, 2) - x * camProj.at<double>(2, 2);
+	//	Q.at<double>(1, 0) = camProj.at<double>(1, 0) - y * camProj.at<double>(2, 0);
+	//	Q.at<double>(1, 1) = camProj.at<double>(1, 1) - y * camProj.at<double>(2, 1);
+	//	Q.at<double>(1, 2) = camProj.at<double>(1, 2) - y * camProj.at<double>(2, 2);
+	//	/*
+	//	Q.at<double>(2, 0) = proProj.at<double>(1, 0) - ya * camProj.at<double>(2, 0);
+	//	Q.at<double>(2, 1) = proProj.at<double>(1, 1) - ya * camProj.at<double>(2, 1);
+	//	Q.at<double>(2, 2) = proProj.at<double>(1, 2) - ya * camProj.at<double>(2, 2);
+	//	*/
+	//	Q.at<double>(2, 0) = proProj.at<double>(0, 0) - xa * camProj.at<double>(2, 0);
+	//	Q.at<double>(2, 1) = proProj.at<double>(0, 1) - xa * camProj.at<double>(2, 1);
+	//	Q.at<double>(2, 2) = proProj.at<double>(0, 2) - xa * camProj.at<double>(2, 2);
+	//
+	//	invQ = Q.inv(cv::DECOMP_LU);
+	//	matPos3d = invQ * F;
+	//		
+	//	m_Reconstructed3dPts.at<double>(i, 0) = matPos3d.at<double>(0, 0);
+	//	m_Reconstructed3dPts.at<double>(i, 1) = matPos3d.at<double>(1, 0);
+	//	m_Reconstructed3dPts.at<double>(i, 2) = matPos3d.at<double>(2, 0);
+
+	//}
+
+	cvTriangulatePoints ( cProj, pProj, camPts, proPts, posPts ); 
+
+	for ( int i = 0; i < nValid * 4; ++i ) 
+	{
+		double z = cvmGet(posPts, 3, i);
+
+		m_Reconstructed3dPts.at<double>(i, 0) = cvmGet(posPts, 0, i) / z;
+		m_Reconstructed3dPts.at<double>(i, 1) = cvmGet(posPts, 1, i) / z;
+		m_Reconstructed3dPts.at<double>(i, 2) = cvmGet(posPts, 2, i) / z;
+	}
+
+	return;
 }
 
 void ARTagHelper::GetMarkerCornerPos2dInProjector ( GrayCode * gc )

@@ -78,7 +78,10 @@ SlsMainWnd::SlsMainWnd(int glutWndHandler) :
 	new GLUI_Separator(m_GluiMainWnd);
 
 	m_GluiButtonCapture = new GLUI_Button (m_GluiMainWnd, "Capture Image", SlsMainWnd::SLS_CAPTURE_IMAGE, SlsMainWnd::SLSStatusCB);
+	new GLUI_Separator(m_GluiMainWnd);
+
 	m_GluiButtonDetectArtag = new GLUI_Button (m_GluiMainWnd, "Detect ARTag", SlsMainWnd::SLS_DETECT_ARTAG, SlsMainWnd::SLSStatusCB);
+	new GLUI_Separator(m_GluiMainWnd);
 
 	m_GluiButtonProject = new GLUI_Button (m_GluiMainWnd, "Project Structured Light", SlsMainWnd::SLS_INIT_PROJECTING, SlsMainWnd::SLSStatusCB);
 	m_GluiButtonCalcShape = new GLUI_Button (m_GluiMainWnd, "Calc 3D Shape", SlsMainWnd::SLS_CALC_SHAPE, SlsMainWnd::SLSStatusCB);

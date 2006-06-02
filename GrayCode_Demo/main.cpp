@@ -61,7 +61,7 @@ void Display(void)
 	glLoadIdentity();
 
 	gc->DispCode();
-	if ( !gc->NextFrame() )
+	if ( !gc->GetNextFrame() )
 	{
 		gc->InitDispCode(1, GrayCode::DISP_GRAYCODE, GrayCode::HORI);
 	}
@@ -92,41 +92,39 @@ void Display(void)
 
 int main(int argc, char ** argv)
 {
-	/*
-	for (int i = 0; i < 16; ++i) 
+	for (unsigned int i = 0; i < 2 ^ 32; ++i) 
 	{
-		std::cout << "Origin:\t" ; ShowBinary(i);
-		std::cout << "B2G:\t" ; ShowBinary(Binary2Gray(i));
-		std::cout << "G2B:\t"; ShowBinary(Gray2Binary(Binary2Gray(i)));
+		// std::cout << "Origin:\t" ; ShowBinary(i);
+		// std::cout << "B2G:\t" ; ShowBinary(Binary2Gray(i));
+		// std::cout << "G2B:\t"; ShowBinary(Gray2Binary(Binary2Gray(i)));
 
-		assert (i == Gray2Binary(Binary2Gray(i)));
+		assert (i == gc->Gray2Binary(gc->Binary2Gray(i)));
 	}
 	
 	std::cout << std::endl;
 
 	ShowBinary(0xffffffff);
-	ShowBinary(Binary2Gray(0xffffffff));
-	ShowBinary(Gray2Binary(Binary2Gray(0xffffffff)));
+	ShowBinary(gc->Binary2Gray(0xffffffff));
+	ShowBinary(gc->Gray2Binary(gc->Binary2Gray(0xffffffff)));
 
 	std::cout << std::endl;
-	*/
 
-	gc ->InitDispCode(1, GrayCode::DISP_GRAYCODE, GrayCode::HORI);
+	//gc ->InitDispCode(1, GrayCode::DISP_GRAYCODE, GrayCode::HORI);
 
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-	glutInitWindowPosition(200, 200);
-	glutInitWindowSize(projectorWidth, projectorHeight);
+	//glutInit(&argc, argv);
+	//glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+	//glutInitWindowPosition(200, 200);
+	//glutInitWindowSize(projectorWidth, projectorHeight);
 
-	glutMainWndHandler = glutCreateWindow("Display Gray Code");
+	//glutMainWndHandler = glutCreateWindow("Display Gray Code");
 
-	glutDisplayFunc(Display);
+	//glutDisplayFunc(Display);
 
-	//
-	// Start to Loop
-	// 
+	////
+	//// Start to Loop
+	//// 
 
-	glutMainLoop();
+	//glutMainLoop();
 
 	// 
 	// End Loop

@@ -401,15 +401,17 @@ ExtrCalibrator::ExtrCalib ( int type, double (* markerPos2d)[2], double (* marke
 		}
 	}
 
-	// Extrinsic Parameter Calibration using an OpenCV Function
-	cv::solvePnP(pos3d, pos2d, intrinsic, distortion, rotation, translation);
+	// Extrinsic Parameter Calibration Using an OpenCV Function
+	cv::solvePnP ( pos3d, pos2d, intrinsic, distortion, rotation, translation );
 
 	// 
 	// Extrinsic = Rotation | Translation
 	// 
 
-	cv::Mat rotation33(3, 3, CV_64FC1);
-	cv::Rodrigues( rotation, rotation33 );
+	cv::Mat rotation33 ( 3, 3, CV_64FC1 );
+	// TODO: 
+	// Need to understand what it -- Rodrigues means ??
+	cv::Rodrigues ( rotation, rotation33 );
 	
 	for ( int x = 0; x < 3; ++x )
 	{
@@ -438,6 +440,8 @@ ExtrCalibrator::GetMatrix(int deviceType, int matType)
 		{
 		case INTR:		return m_CamIntr;
 		case DIST:		return m_CamDist;
+		case ROT:		return m_CamRot;
+		case TRANS:	return m_CamTrans;
 		case EXTR:		return m_CamExtr;
 		}
 			
@@ -449,6 +453,8 @@ ExtrCalibrator::GetMatrix(int deviceType, int matType)
 		{
 		case INTR:		return m_ProIntr;
 		case DIST:		return m_ProDist;
+		case ROT:		return m_ProRot;
+		case TRANS:	return m_ProTrans;
 		case EXTR:		return m_ProExtr;
 		}
 			

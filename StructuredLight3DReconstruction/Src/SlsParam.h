@@ -73,6 +73,8 @@ public:
 
 	const char * GetGrayCodeDir() const { return m_GrayCodeDir; }
 
+	const char * Get3dObjFilePath() const { return m_ObjFile; }
+
 	// std::string GetARTagConfigFilePath() const { return std::string(m_ARTagConfigFile); }
 	// std::string GetARTagPosFilePath() const { return std::string(m_ARTagPosFile); }
 

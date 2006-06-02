@@ -8,58 +8,58 @@
 class GrayCode
 {
 	friend void Display ( void );
-
+	
 private:
 	
-	int m_GBit;														// Current Bit Depth
+	int m_GBit;															// Current Bit Depth
 
-	int m_CodeDepth;												// Bit depth of Gray Code
-	int m_CodeResolution;										// Spatial resolution (pixel) of Gray Code
+	int m_CodeDepth;													// Bit depth of Gray Code
+	int m_CodeResolution;											// Spatial resolution (pixel) of Gray Code
 
-	int m_SlitWidth;													// Slit width of each projected white stripe
-	int m_SlitInterval;												// Spatial interval (pixel) of multi-slit
+	int m_SlitWidth;														// Slit width of each projected white stripe
+	int m_SlitInterval;													// Spatial interval (pixel) of multi-slit
 
-	unsigned char * m_Diff;										// Store binarized image derived from difference between nega / positive images
+	unsigned char * m_Diff;											// Store binarized image derived from difference between nega / positive images
 
-	int m_CameraWidth, m_CameraHeight;			 	// Camera Size
-	int m_ProjectorWidth, m_ProjectorHeight;			// Projector Size
+	int m_CameraWidth, m_CameraHeight;			 		// Camera Size
+	int m_ProjectorWidth, m_ProjectorHeight;				// Projector Size
 
-	double * m_Sum;												// Buffers for multi-slit projection
+	double * m_Sum;													// Buffers for multi-slit projection
 	double * m_Num;
 
-	char m_DirName[128];										// Directory Name
+	char m_DirName[128];											// Directory Name
 
 	// bool skip_graycode;
 
-	int m_ProjSeqNum;											// Sequence of Projector Placement
+	int m_ProjSeqNum;												// Sequence of Projector Placement
 
 public:
 
-	int m_bSlit;														// Flag ( True / False: With / Without Multi-Slit Projection )
+	int m_bSlit;															// Flag ( True / False: With / Without Multi-Slit Projection )
 
-	unsigned int * m_C2P[2];									// C2P map ( Double / Int -> With / Without Multi-Slit Projection )
+	unsigned int * m_C2P[2];										// C2P map ( Double / Int -> With / Without Multi-Slit Projection )
 	double * m_C2P_DB[2];
-	unsigned char * m_C2P_UC[2];							// C2P map ( For Displaying )
+	unsigned char * m_C2P_UC[2];								// C2P map ( For Displaying )
 
-	unsigned char * m_White, * m_Black;					// FM / EM
+	unsigned char * m_White, * m_Black;						// FM / EM
 
 	unsigned char * m_Illuminance;
 	unsigned char * m_Compensate;
 
-	unsigned char * m_bSlitImg;								// Binalized multi-slit image ( captured )
-	bool * m_Mask;													// Mask image ( Remove non-projected (e.g. shadow) region )
+	unsigned char * m_bSlitImg;									// Binalized multi-slit image ( captured )
+	bool * m_Mask;														// Mask image ( Remove non-projected (e.g. shadow) region )
 
-	int m_NormThres;												// Threshold for normalize captured multi-slit images
-	int m_CurrSlitNum;												// m_CurrSlitNum -- The slit is currently projected
+	int m_NormThres;													// Threshold for normalize captured multi-slit images
+	int m_CurrSlitNum;													// m_CurrSlitNum -- The slit is currently projected
 
 	// 
 	// Program mode definition 
 	// 
-	// DISP_IDLE														-- no task 
-	// DISP_LIVE_INPUT_IMAGE_ON_SUBWINDOW		-- display live input image on subwindow
-	// DISP_SLIT														-- display multi-slit projection
-	// DISP_ILLUMI													-- display white image
-	// DISP_GRAYCODE											-- display gray code 
+	// DISP_IDLE															-- no task 
+	// DISP_LIVE_INPUT_IMAGE_ON_SUBWINDOW			-- display live input image on subwindow
+	// DISP_SLIT															-- display multi-slit projection
+	// DISP_ILLUMI														-- display white image
+	// DISP_GRAYCODE												-- display gray code 
 	// 
 
 	enum 
@@ -146,7 +146,7 @@ public:
 	void DispCode ( int hv_mode, int np_mode );
 
 	// ============================
-	// Process of captured images
+	// Process of Captured Images
 	// ============================
 
 	// 
@@ -177,6 +177,7 @@ public:
 	// Ready to Display Next Frame
 	// 
 	
+	bool SaveCurrFrame ();
 	bool GetNextFrame ();
 	inline void SetDispModeIdle () { m_DispMode = DISP_IDLE; }
 

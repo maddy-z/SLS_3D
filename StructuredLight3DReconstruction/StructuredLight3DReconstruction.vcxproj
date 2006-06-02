@@ -13,9 +13,11 @@
   <ItemGroup>
     <ClInclude Include="Src\ARTagHelper.h" />
     <ClInclude Include="Src\BilateralFilter.h" />
+    <ClInclude Include="Src\CalcShape.h" />
     <ClInclude Include="Src\ExtrCalibrator.h" />
     <ClInclude Include="Src\GrayCode.h" />
     <ClInclude Include="Src\PointGreyCamera.h" />
+    <ClInclude Include="Src\ShapeCalculator.h" />
     <ClInclude Include="Src\SlsMainWnd.h" />
     <ClInclude Include="Src\SlsParam.h" />
     <ClInclude Include="Src\SlsUtils.h" />
@@ -23,10 +25,12 @@
   <ItemGroup>
     <ClCompile Include="Src\ARTagHelper.cpp" />
     <ClCompile Include="Src\BilateralFilter.cpp" />
+    <ClCompile Include="Src\CalcShape.cpp" />
     <ClCompile Include="Src\ExtrCalibrator.cpp" />
     <ClCompile Include="Src\GrayCode.cpp" />
     <ClCompile Include="Src\main.cpp" />
     <ClCompile Include="Src\PointGreyCamera.cpp" />
+    <ClCompile Include="Src\ShapeCalculator.cpp" />
     <ClCompile Include="Src\SlsMainWnd.cpp" />
     <ClCompile Include="Src\SlsParam.cpp" />
     <ClCompile Include="Src\SlsUtils.cpp" />

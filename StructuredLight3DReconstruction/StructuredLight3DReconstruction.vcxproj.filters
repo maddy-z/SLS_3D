@@ -39,6 +39,12 @@
     <ClInclude Include="Src\SlsUtils.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Src\ShapeCalculator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\CalcShape.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\SlsMainWnd.cpp">
@@ -66,6 +72,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Src\SlsUtils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ShapeCalculator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\CalcShape.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

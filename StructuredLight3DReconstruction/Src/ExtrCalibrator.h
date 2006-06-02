@@ -20,8 +20,10 @@ public:
 
 	enum
 	{
-		INTR, 
-		DIST, 
+		INTR,  
+		DIST,
+		ROT,
+		TRANS,
 		EXTR,
 	};
 
@@ -77,7 +79,7 @@ public:
 	*/ 
 
 	const cv::Mat & GetMatrix ( int deviceType, int matType );
-	void PrintMatrix ( const cv::Mat & matrix );
+	static void PrintMatrix ( const cv::Mat & matrix );
 	void SaveMatrix ( const cv::Mat & mat, const char * fname);
 	void SaveMatrix ( int deviceType, int matType, const char * fname );
 
