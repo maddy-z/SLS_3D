@@ -1,4 +1,4 @@
-#include <opencv2\opencv.hpp>
+#include <OpenCV_2.3.1\opencv2\opencv.hpp>
 
 // 
 // Global Variables
@@ -10,7 +10,8 @@ cv::Mat dest;
 char SRC_WIN_NAME[] = "Src Image";
 char DEST_WIN_NAME[] = "Dest Image";
 
-#define		KERNEL_SIZE		31
+#define			KERNEL_SIZE			31
+
 
 //
 // Main Function
@@ -37,6 +38,7 @@ int main(int argc, char ** argv)
 }
 
 /*
+
 // 
 // Global Variables
 // 
@@ -167,4 +169,5 @@ int display_dst( int delay )
 
 	return 0;
 }
+
 */

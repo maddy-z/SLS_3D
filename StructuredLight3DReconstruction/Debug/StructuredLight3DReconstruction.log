@@ -1,10 +1,5 @@
-﻿Build started 2006-4-26 22:59:06.
-     1>Project "C:\Documents and Settings\s\桌面\zfm\StructuredLight3DReconstruction\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" on node 3 (clean target(s)).
-     1>_PrepareForClean:
-         Deleting file "Debug\StructuredLight3DReconstruction.lastbuildstate".
-     1>C:\Program Files\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppClean.targets(74,5): warning : Access to the path 'C:\WINDOWS\MICROSOFT.NET\FRAMEWORK\V4.0.30319\CLR.DLL' is denied.
-     1>Done Building Project "C:\Documents and Settings\s\桌面\zfm\StructuredLight3DReconstruction\StructuredLight3DReconstruction\StructuredLight3DReconstruction.vcxproj" (clean target(s)).
+﻿生成启动时间为 2012/4/26 星期四 10:44:04。
 
-Build succeeded.
+生成成功。
 
-Time Elapsed 00:00:00.21
+已用时间 00:00:00.01

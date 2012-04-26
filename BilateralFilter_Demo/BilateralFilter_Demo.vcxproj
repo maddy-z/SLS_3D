@@ -37,8 +37,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\OpenCV_2.3.1\build\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\OpenCV_2.3.1\build\x86\vc10\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\lib\OpenCV_2.3.1;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\bin\TBB;C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\bin\OpenGL\Glut;C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\bin\OpenGL\Glew;C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\bin\OpenCV_2.3.1;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

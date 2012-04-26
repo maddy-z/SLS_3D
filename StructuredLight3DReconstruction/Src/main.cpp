@@ -1,8 +1,11 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include <gl\glut.h>
-#include <gl\glui.h>
+#include <OpenGL\Glui\glui.h>
+#include <OpenGL\Glut\glut.h>
+
+// #include <gl\glut.h>
+// #include <gl\glui.h>
 
 #include "SlsMainWnd.h"
 #include "SlsParam.h"

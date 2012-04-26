@@ -3,6 +3,7 @@
 <SLSConfiguration version="1.0">
   
   <Param>
+    <!-- This is a Comment!! -->
     <Camera width="640" height="480" type="DragonFly Express" device="2" />
     <Projector width="800" height="600" />
     <MainDisplay width="1280" />

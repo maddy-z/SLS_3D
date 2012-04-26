@@ -50,7 +50,15 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ExecutablePath>C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\bin\TBB;C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\bin\OpenGL\Glut;C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\bin\OpenCV_2.3.1;$(ExecutablePath)</ExecutablePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LibraryPath>C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\lib\TinyXML;C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\lib\OpenGL\Glut;C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\lib\OpenGL\Glui;C:\Users\maddy\Desktop\SLS_3D\3rd Party Lib\lib\OpenCV_2.3.1;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>

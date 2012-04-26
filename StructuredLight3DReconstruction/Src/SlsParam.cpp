@@ -2,13 +2,12 @@
 #include <cstdlib>
 #include <cstring>
 
-#include <TinyXML\tinyxml.h>
 #include <TinyXML\tinystr.h>
+#include <TinyXML\tinyxml.h>
 
 #include "SlsParam.h"
 
 SlsParam::SlsParam()
-
 {
 
 	m_CameraWidth = 0;
