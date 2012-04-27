@@ -4,24 +4,24 @@
 //   MACRO DEFINITIONS
 // ==============
 
-#define			KERNEL_SIZE					15
+#define			KERNEL_SIZE				15
 #define			MAX_KERNEL_SIZE			127
 
-// ============
+// ====================
 //   Global Variables
-// ============
+// ====================
 
 cv::Mat		src;
 cv::Mat		dest;
 
-char	SRC_WIN_NAME[]							= "Src Image";
-char	DEST_WIN_NAME[]							= "Dest Image";
+char	SRC_WIN_NAME[]					= "Src Image";
+char	DEST_WIN_NAME[]					= "Dest Image";
 
-char TRACKBAR_KERNELSIZE_NAME[]		= "Kernel Size";
+char TRACKBAR_KERNELSIZE_NAME[]			= "Kernel Size";
 char TRACKBAR_SIGMA1_NAME[]				= "Sigma1 (Sigma 2)";
 
-int		kernelSize										= 2 * KERNEL_SIZE + 1;
-int		sigma1											= KERNEL_SIZE;
+int		kernelSize						= 2 * KERNEL_SIZE + 1;
+int		sigma1							= KERNEL_SIZE;
 
 // 
 // Callback Functions
@@ -33,13 +33,12 @@ void onTrackBar ( int, void * )
 	cv::imshow ( DEST_WIN_NAME, dest);
 }
 
-// ==========
+// =================
 //   Main Function
-// ==========
+// =================
 
 int main(int argc, char ** argv)
 {
-
 	cv::namedWindow ( SRC_WIN_NAME, CV_WINDOW_AUTOSIZE );
 	cv::namedWindow ( DEST_WIN_NAME, CV_WINDOW_AUTOSIZE );
 	
@@ -55,5 +54,4 @@ int main(int argc, char ** argv)
 
 	cv::waitKey(0);
 	return EXIT_SUCCESS;
-
 }
