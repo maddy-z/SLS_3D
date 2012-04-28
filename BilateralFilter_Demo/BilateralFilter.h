@@ -12,11 +12,11 @@ public:
 	// Constructor & Destructor
 	// 
 
-	BilateralFilter(double spatialSigma, double rangeSigma, int kernelSize, int apprRes);
+	BilateralFilter(double spatialSigma, double rangeSigma, int kernelSize, int apprRes = 256);
 	virtual ~BilateralFilter();
 
 	// 
-	// Filter 2-Dimension Image
+	// Filtering 2-Dimension Image
 	// 
 
 	bool Filter(const double * src, double * dest, int height, int width, int channel);

@@ -1,4 +1,5 @@
 #include <OpenCV_2.3.1\opencv2\opencv.hpp>
+#include <OpenCV_2.3.1\opencv2\imgproc\imgproc.hpp>
 
 #include "BilateralFilter.h"
 #include "AnoBF.h"
@@ -31,8 +32,8 @@ char	TRACKBAR_SIGMASPACE_NAME[]	= "Sigma Space";
 
 int		kernelSize					= KERNEL_SIZE;
 
-int		sigmaColor					= 96;
-int		sigmaSpace					= 96;
+int		sigmaColor					= 60;
+int		sigmaSpace					= 60;
 
 // 
 // Utility Function
@@ -105,9 +106,11 @@ void onTrackBar(int, void *)
 	}
 
 	DoubleArrayCopyToCvMat(destArray, dest);
-	// delete [] destArray;
+
+	cv::bilateralFilter(src, dest2, kernelSize, sigmaColor, sigmaSpace, cv::BORDER_CONSTANT);
 
 	cv::imshow( DEST_WIN_NAME, dest);
+	cv::imshow( DEST2_WIN_NAME, dest2);
 }
 
 // =================
@@ -129,13 +132,7 @@ int main(int argc, char ** argv)
 	CvMatCopyToDoubleArray(src, srcArray);
 	CvMatCopyToDoubleArray(src, destArray);
 
-	// DoubleArrayCopyToCvMat(destArray, dest);
-	// cv::imshow(DEST_WIN_NAME, dest);
-
-	cv::bilateralFilter(src, dest2, kernelSize, sigmaColor, sigmaSpace);
-
 	cv::imshow( SRC_WIN_NAME, src);
-	cv::imshow( DEST2_WIN_NAME, dest2);
 
 	cv::createTrackbar(TRACKBAR_KERNELSIZE_NAME, DEST_WIN_NAME, &kernelSize, MAX_KERNEL_SIZE, onTrackBar);
 	cv::createTrackbar(TRACKBAR_SIGMACOLOR_NAME, DEST_WIN_NAME, &sigmaColor, 2 * MAX_KERNEL_SIZE, onTrackBar);
