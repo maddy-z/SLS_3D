@@ -13,6 +13,7 @@ BilateralFilter(double spatialSigma, double rangeSigma, int kernelSize, int appr
 	m_RangeSigma(rangeSigma),
 	m_KernelSize(kernelSize),
 	m_ApproxResolution(apprRes)
+
 {
 	
 	if (m_ApproxResolution <= 0)
