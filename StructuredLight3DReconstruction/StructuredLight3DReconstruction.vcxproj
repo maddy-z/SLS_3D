@@ -11,17 +11,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GrayCode.h" />
     <ClInclude Include="Src\ARTagHelper.h" />
     <ClInclude Include="Src\BilateralFilter.h" />
+    <ClInclude Include="Src\GrayCode.h" />
     <ClInclude Include="Src\PointGreyCamera.h" />
     <ClInclude Include="Src\SlsMainWnd.h" />
     <ClInclude Include="Src\SlsParam.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GrayCode.cpp" />
     <ClCompile Include="Src\ARTagHelper.cpp" />
     <ClCompile Include="Src\BilateralFilter.cpp" />
+    <ClCompile Include="Src\GrayCode.cpp" />
     <ClCompile Include="Src\main.cpp" />
     <ClCompile Include="Src\PointGreyCamera.cpp" />
     <ClCompile Include="Src\SlsMainWnd.cpp" />
